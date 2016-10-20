@@ -1,0 +1,13 @@
+{
+  "name": "cock-server",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "author": "Collaboration",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.15.2",
+    "express": "4.14.0"
+  }
+}
