@@ -4,44 +4,21 @@ const bodyParser = require('body-parser');
 const app = express();
 const server = http.Server(app);
 app.use(bodyParser.json());
-const service = require('./service');
+const controller = require('./controller');
 
-app.post('/listener/:port', (req, res) => {
-	service.addListener(req.params.port);
-	res.send('Listener created on ' + req.params.port);
-});
+app.get('/listener/:port', controller.getListener);
+app.post('/listener/:port', controller.addListener);
+app.delete('/listener/:port', controller.removeListener);
 
-app.get('/listener/:port', (req, res) => {
-	res.sendStatus(service.isListening(req.params.port) ? 200 : 404);
-});
+app.post('/listener/:port/route', controller.addRoute);
+app.post('/listener/:port/chunk', controller.sendChunk);
 
-app.post('/listener/:port/route', (req, res) => {
-	const port = req.params.port;
-	const method = req.body.method.toLowerCase();
-	const route = req.body.route;
-	const response = req.body.response;
+app.get('/listener', controller.getListeners);
+app.delete('/listener', controller.removeListeners);
 
-	try {
-		service.addRoute(port, method, route, response);
-		res.send(`Route created on localhost:${port}/${route} (${method})`);
-	} catch (e) {
-		console.error(e);
-		res.status(400).send(e.message);
-	}
-});
-
-app.post('/listener/:port/chunk', (req, res) => {
-	const port = req.params.port;
-	const route = req.body.route;
-	console.log(`Send chunk to ${port} ${route} ${req.body.data}`);
-	const chunk = Buffer.from(req.body.data, 'base64');
-	try {
-		service.sendChunk(port, route, chunk);
-		res.sendStatus(200);
-	} catch (e) {
-		console.error(e);
-		res.status(400).send(e.message);
-	}
+app.use((err, req, res, next) => {
+	console.error(err.stack);
+	res.status(400).send(err.message);
 });
 
 server.listen(3000);
