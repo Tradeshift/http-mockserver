@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const service = require('./service');
 const controller = {};
 
@@ -19,11 +18,17 @@ controller.removeListener = (req, res) => {
 
 controller.addRoute = (req, res) => {
 	const port = req.params.port;
-	const method = _.toLower(req.body.method);
-	const route = req.body.route;
-	const response = req.body.response;
+	const options = req.body;
 
-	service.addRoute(port, method, route, response);
+	if (!options.method) {
+		throw new Error('"method" required');
+	}
+
+	if (!options.route) {
+		throw new Error('"route" required');
+	}
+
+	service.addRoute(port, options);
 	res.sendStatus(200);
 };
 
@@ -31,6 +36,11 @@ controller.sendChunk = (req, res) => {
 	const port = req.params.port;
 	const route = req.body.route;
 	const chunk = Buffer.from(req.body.data, 'base64');
+
+	if (!route) {
+		throw new Error('"route" required');
+	}
+
 	service.sendChunk(port, route, chunk);
 	res.sendStatus(200);
 };
