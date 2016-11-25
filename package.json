@@ -1,0 +1,16 @@
+{
+  "name": "collab-mock-server",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node src/index.js",
+    "debug": "node --inspect --debug-brk src/index.js"
+  },
+  "author": "Tradeshift",
+  "dependencies": {
+    "body-parser": "1.15.2",
+    "express": "4.14.0",
+    "http-proxy": "1.15.2",
+    "lodash": "4.16.4",
+    "server-destroy": "1.0.1"
+  }
+}
