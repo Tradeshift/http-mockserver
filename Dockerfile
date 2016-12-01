@@ -1,4 +1,4 @@
-FROM node:6.5
+FROM node:6.9.1
 
 # Install npm dependencies
 COPY package.json package.json

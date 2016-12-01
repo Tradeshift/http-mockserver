@@ -34,7 +34,7 @@ function createServer (port, app) {
 function sendChunk (port, route, chunk) {
 	const listener = listeners[port];
 	if (!listener) {
-		throw new Error('No listener exists on ' + port);
+		throw new Error(`Can't send chunk. No listener exists on ${port}`);
 	}
 
 	const routeObj = listener.routes[route];
@@ -78,15 +78,12 @@ function getRouteHandler (port, options) {
 }
 
 function getSimpleRouteHandler (port, options) {
-	const route = options.route;
-	const response = options.response;
-	const method = options.method;
-
+	const {route, response, method, headers = {}, statusCode = 200} = options;
 	console.log('Added route', reqFm(method, port, route));
 	return (req, res) => {
-		console.log(reqFm(req.method, port, req.originalUrl), `(Response: ${response.statusCode})`);
-		res.set(response.headers);
-		res.status(response.statusCode).send(response.body);
+		console.log(reqFm(req.method, port, req.originalUrl), `(Response: ${statusCode})`);
+		res.set(headers);
+		res.status(statusCode).send(response);
 	};
 }
 
@@ -124,7 +121,7 @@ function getStreamingRouteHandler (port, options) {
 function getListener (port) {
 	const listener = listeners[port];
 	if (!listener) {
-		throw new Error('No listener exists on ' + port);
+		throw new Error(`Can't get listener. No listener exists on ${port}`);
 	}
 	return _.mapValues(listener.routes, route => {
 		route.clientsCount = route.clients.length;
@@ -140,7 +137,7 @@ function getListeners () {
 
 function removeListener (port) {
 	if (!listeners[port]) {
-		throw new Error('No listener exists on ' + port);
+		throw new Error(`Can't remove listener. No listener exists on ${port}`);
 	}
 
 	listeners[port].server.destroy();
