@@ -47,7 +47,7 @@ controller.sendChunk = (req, res) => {
 
 controller.getListeners = (req, res) => {
 	const listeners = service.getListeners();
-	res.send(JSON.stringify(listeners));
+	res.json(listeners).end();
 };
 
 controller.removeListeners = (req, res) => {
