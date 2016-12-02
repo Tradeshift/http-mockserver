@@ -5,6 +5,9 @@
     "start": "node src/index.js",
     "debug": "node --inspect --debug-brk src/index.js"
   },
+  "engines": {
+    "node": ">=6.9.1"
+  },
   "author": "Tradeshift",
   "dependencies": {
     "body-parser": "1.15.2",
