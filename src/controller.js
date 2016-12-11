@@ -3,7 +3,7 @@ const controller = {};
 
 controller.getListener = (req, res) => {
 	const listener = service.getListener(req.params.port);
-	res.send(JSON.stringify(listener));
+	res.json(listener);
 };
 
 controller.addListener = (req, res) => {
