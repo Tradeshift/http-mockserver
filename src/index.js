@@ -7,14 +7,15 @@ app.use(bodyParser.json());
 const controller = require('./controller');
 
 app.get('/listener/:port', controller.getListener);
-app.post('/listener/:port', controller.addListener);
+app.post('/listener/:port', controller.addListenerOrRoute);
 app.delete('/listener/:port', controller.removeListener);
 
-app.post('/listener/:port/route', controller.addRoute);
 app.post('/listener/:port/chunk', controller.sendChunk);
 
 app.get('/listener', controller.getListeners);
-app.delete('/listener', controller.removeListeners);
+app.delete('/clear', controller.clear);
+
+app.get('/requests/:port?', controller.getRequests);
 
 app.use((err, req, res, next) => {
 	console.error(err.stack);
