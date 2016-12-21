@@ -1,0 +1,12 @@
+{
+	"port": 8888,
+	"method": "GET",
+	"uri": "/users",
+	"statusCode": 200,
+	"headers": {
+		"X-Custom-Header": "Hello"
+	},
+	"response": {
+		"a": "this is the response body"
+	}
+}

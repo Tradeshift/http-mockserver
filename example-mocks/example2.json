@@ -1,0 +1,10 @@
+{
+	"port": 8888,
+	"method": "GET",
+	"uri": "/admin",
+	"statusCode": 500,
+	"headers": {
+		"Content-Type": "text/plain"
+	},
+	"response": "Endpoint is not allowed"
+}

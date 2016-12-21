@@ -1,13 +1,23 @@
 {
-  "name": "collab-mock-server",
+  "name": "http-mockserver",
+  "description": "Testing made easy with mocked http servers",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
-    "start": "node src/index.js",
-    "debug": "node --inspect --debug-brk src/index.js",
+    "start": "bin/http-mockserver.js",
+    "debug": "node --inspect --debug-brk src/server/index.js",
     "lint": "eslint ./src"
   },
+  "bin": {
+    "http-mockserver": "bin/http-mockserver.js"
+  },
+  "main": "./src/index.js",
   "engines": {
     "node": ">=6.9.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tradeshift/node-mock-server.git"
   },
   "author": "Tradeshift",
   "dependencies": {
@@ -15,7 +25,10 @@
     "express": "4.14.0",
     "http-proxy": "1.15.2",
     "lodash": "4.16.4",
-    "server-destroy": "1.0.1"
+    "q": "1.4.1",
+    "request": "2.79.0",
+    "server-destroy": "1.0.1",
+    "yargs": "^6.5.0"
   },
   "devDependencies": {
     "eslint": "^3.11.1",
