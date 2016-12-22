@@ -4,12 +4,12 @@
   "version": "1.0.1",
   "license": "MIT",
   "scripts": {
-    "start": "bin/http-mockserver.js",
+    "start": "./bin/http-mockserver.js",
     "debug": "node --inspect --debug-brk src/server/index.js",
     "lint": "eslint ./src"
   },
   "bin": {
-    "http-mockserver": "bin/http-mockserver.js"
+    "http-mockserver": "./bin/http-mockserver.js"
   },
   "main": "./src/index.js",
   "engines": {
