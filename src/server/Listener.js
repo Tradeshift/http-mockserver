@@ -44,6 +44,8 @@ class Listener {
 	getRouteHandler (options) {
 		if (options.response) {
 			return this.getSimpleRouteHandler(options);
+		} else if (options.handler) {
+			return this.getDynamicRouteHandler(options);
 		} else if (options.proxy) {
 			return this.getProxyRouteHandler(options);
 		} else {
@@ -62,10 +64,15 @@ class Listener {
 		};
 	}
 
+	getDynamicRouteHandler (options) {
+		const { uri, method, handler } = options;
+		console.log('Added dynamic route', reqFm(method, this.port, uri));
+		return handler;
+	}
+
 	getProxyRouteHandler (options) {
 		const srcPort = this.port;
-		const uri = options.uri;
-		const method = options.method;
+		const { uri, method } = options;
 		const targetPort = options.proxy.target.substring(options.proxy.target.lastIndexOf(':') + 1);
 		const proxy = httpProxy.createProxyServer(options.proxy);
 

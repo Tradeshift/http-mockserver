@@ -26,6 +26,7 @@
     "http-proxy": "1.15.2",
     "lodash": "4.16.4",
     "q": "1.4.1",
+    "recursive-readdir": "^2.1.0",
     "request": "2.79.0",
     "server-destroy": "1.0.1",
     "yargs": "^6.5.0"
