@@ -26,7 +26,7 @@ const argv = yargs
 	.argv;
 
 if (argv.mocks) {
-	configInitializer.registerRoutes(argv.mocks);
+	configInitializer.registerMocks(argv.mocks);
 }
 
 startMockServer(argv.port);

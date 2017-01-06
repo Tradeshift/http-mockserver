@@ -1,34 +1,47 @@
 const fs = require('fs');
 const path = require('path');
+const readDir = require('recursive-readdir');
 const listenerService = require('../src/server/listenerService.js');
 
 const configInitializer = {};
 
-configInitializer.loadConfigs = function (dirname, onFileContent) {
-	fs.readdir(dirname, (err, filenames) => {
+configInitializer.readConfigs = function (dirname, cb) {
+	readDir(dirname, (err, filenames) => {
 		if (err) {
 			console.log(err);
 			return;
 		}
 
 		filenames
-			.filter(filename => path.extname(filename) === '.json')
-			.forEach((filename) => {
-				fs.readFile(path.join(dirname, filename), 'utf-8', (err, content) => {
-					if (err) {
-						console.log(err);
-						return;
-					}
-					onFileContent(filename, JSON.parse(content));
-				});
-			});
+			.filter(filename => ['.json', '.js'].includes(path.extname(filename)))
+			.forEach((filename) => readConfig(filename, cb));
 	});
 };
 
-configInitializer.registerRoutes = function (path) {
-	configInitializer.loadConfigs(path, (filename, configFile) => {
-		listenerService.addRoute(configFile.port, configFile);
-	});
+function readConfig (filename, cb) {
+	const resolvedPath = path.resolve(filename);
+	try {
+		const file = require(resolvedPath);
+		cb(filename, file);
+	} catch (e) {
+		console.log(`Could not read file ${resolvedPath}`, e);
+	}
+}
+
+function registerMock (filename, configFile) {
+	switch (path.extname(filename)) {
+		case '.json': return listenerService.addRoute(configFile.port, configFile);
+		case '.js': return configFile(listenerService.addRoute);
+	}
+}
+
+configInitializer.registerMocks = function (mockPath) {
+	const isDir = fs.lstatSync(mockPath).isDirectory();
+	if (isDir) {
+		configInitializer.readConfigs(mockPath, registerMock);
+	} else {
+		readConfig(mockPath, (filename, configFile) => registerMock(filename, configFile));
+	}
 };
 
 module.exports = configInitializer;
