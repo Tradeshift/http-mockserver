@@ -54,13 +54,14 @@ class Listener {
 	}
 
 	getSimpleRouteHandler (options) {
-		const {uri, response, method, headers = {}, statusCode = 200} = options;
+		const {uri, response, method} = options;
+		const statusCode = response.statusCode || 200;
 		console.log('Added route', reqFm(method, this.port, uri));
 		return (req, res) => {
 			requestService.addRequest(req, 'simple');
 			console.log(reqFm(req.method, this.port, req.originalUrl), `(Response: ${statusCode})`);
-			res.set(headers);
-			res.status(statusCode).send(response);
+			res.set(response.headers);
+			res.status(statusCode).send(response.body);
 		};
 	}
 

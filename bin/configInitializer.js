@@ -5,7 +5,7 @@ const listenerService = require('../src/server/listenerService.js');
 
 const configInitializer = {};
 
-configInitializer.readConfigs = function (dirname, cb) {
+function readConfigs (dirname, cb) {
 	readDir(dirname, (err, filenames) => {
 		if (err) {
 			console.log(err);
@@ -16,7 +16,7 @@ configInitializer.readConfigs = function (dirname, cb) {
 			.filter(filename => ['.json', '.js'].includes(path.extname(filename)))
 			.forEach((filename) => readConfig(filename, cb));
 	});
-};
+}
 
 function readConfig (filename, cb) {
 	const resolvedPath = path.resolve(filename);
@@ -24,23 +24,33 @@ function readConfig (filename, cb) {
 		const file = require(resolvedPath);
 		cb(filename, file);
 	} catch (e) {
-		console.log(`Could not read file ${resolvedPath}`, e);
+		console.log(`Error with mock ${resolvedPath}`, e);
 	}
 }
 
-function registerMock (filename, configFile) {
+function registerMock (filename, fileContent) {
 	switch (path.extname(filename)) {
-		case '.json': return listenerService.addRoute(configFile.port, configFile);
-		case '.js': return configFile(listenerService.addRoute);
+		case '.json': return registerStaticMocks(filename, fileContent);
+		case '.js': return registerDynamicMocks(filename, fileContent);
 	}
+}
+
+function registerStaticMocks (filename, config) {
+	return listenerService.addRoute(config.port, config);
+}
+
+function registerDynamicMocks (filename, handler) {
+	return handler(config => {
+		return listenerService.addRoute(config.port, config);
+	});
 }
 
 configInitializer.registerMocks = function (mockPath) {
 	const isDir = fs.lstatSync(mockPath).isDirectory();
 	if (isDir) {
-		configInitializer.readConfigs(mockPath, registerMock);
+		readConfigs(mockPath, registerMock);
 	} else {
-		readConfig(mockPath, (filename, configFile) => registerMock(filename, configFile));
+		readConfig(mockPath, registerMock);
 	}
 };
 

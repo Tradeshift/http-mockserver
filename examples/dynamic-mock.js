@@ -1,9 +1,10 @@
 let counter = 0;
 
 module.exports = function (addRoute) {
-	addRoute(2020, {
-		uri: '/sqren',
+	addRoute({
+		port: 2020,
 		method: 'GET',
+		uri: '/sqren',
 		handler: function (req, res) {
 			counter++;
 			res.send(`Counter: ${counter}`);

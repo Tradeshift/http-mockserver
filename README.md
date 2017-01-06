@@ -43,13 +43,14 @@ $ http-mockserver --help
 The following methods can be called on any MockClient instance
 
 #### mockClient.addRoute([options])
-Adds a new route to the mockServer. Returns a Promise for a `response` object.
+Adds a new route to the mockServer. Returns a promise.
 
 ##### Options:
 * **uri**: uri of request, eg. `/users/5345`
 * **method**: method of request, eg. `GET`
-* **headers**: http headers of response , eg: `{'Content-Type': 'application/json'}`
-* **response**: Response body, eg `{data: 'hello'}`
+* **response**: Response object
+	* **body**, eg. `{data: "hello"}`
+	* **headers**, eg. `{"Content-Type": "application/json"}`
 
 #### mockClient.getRequests()
 

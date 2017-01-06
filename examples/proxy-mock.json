@@ -1,0 +1,9 @@
+{
+	"port": 8888,
+	"method": "GET",
+	"uri": "/company",
+	"proxy": {
+		"target": "http://localhost:9876",
+		"// Proxy documentation": "https://github.com/nodejitsu/node-http-proxy"
+	}
+}

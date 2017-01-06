@@ -1,0 +1,11 @@
+{
+	"port": 8888,
+	"method": "GET",
+	"uri": "/users",
+	"response": {
+		"statusCode": 200,
+		"body": {
+			"a": "this is the response body"
+		}
+	}
+}
