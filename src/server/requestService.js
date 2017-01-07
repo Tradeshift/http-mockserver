@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const _ = require('lodash');
 
-let requests = [];
+const requests = [];
 const requestService = {};
 
 requestService.addRequest = function (req, type) {
@@ -26,16 +26,21 @@ requestService.addRequest = function (req, type) {
 	});
 };
 
-requestService.getRequests = function (port) {
-	if (!port) {
-		return requests;
+requestService.getRequests = function (port, type) {
+	let output = requests;
+	if (port) {
+		output = output.filter(req => req.req.port === port);
 	}
 
-	return requests.filter(req => req.req.port === port);
+	if (type) {
+		output = output.filter(req => req.type === type);
+	}
+
+	return output;
 };
 
 requestService.clear = function () {
-	requests = [];
+	requests.splice(0, requests.length);
 };
 
 function removePendingRequest (id) {

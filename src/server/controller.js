@@ -3,11 +3,6 @@ const listenerService = require('./listenerService');
 const requestService = require('./requestService');
 const controller = {};
 
-controller.getListener = (req, res) => {
-	const listener = listenerService.getListener(req.params.port);
-	res.json(listener.toString());
-};
-
 controller.addListenerOrRoute = (req, res) => {
 	const port = req.params.port;
 	const options = req.body;
@@ -48,8 +43,15 @@ controller.sendChunk = (req, res) => {
 };
 
 controller.getListeners = (req, res) => {
-	const listeners = _.mapValues(listenerService.getAll(), (listener, port) => listener.toString());
-	res.json(listeners).end();
+	const port = parseInt(req.params.port, 10);
+	if (!port) {
+		const listeners = _.mapValues(listenerService.getAll(), (listener, port) => listener.toString());
+		res.json(listeners).end();
+		return;
+	}
+
+	const listener = listenerService.get(port);
+	res.json(listener.toString());
 };
 
 controller.clear = (req, res) => {
@@ -60,7 +62,8 @@ controller.clear = (req, res) => {
 
 controller.getRequests = (req, res) => {
 	const port = parseInt(req.params.port, 10);
-	const requests = requestService.getRequests(port);
+	const type = req.query.type;
+	const requests = requestService.getRequests(port, type);
 	res.json(requests);
 };
 

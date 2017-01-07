@@ -13,6 +13,7 @@ listenerService.get = function (port) {
 	if (!listener) {
 		throw new Error(`Can't get listener. No listener exists on ${port}`);
 	}
+	return listener;
 };
 
 listenerService.add = function (port) {

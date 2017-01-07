@@ -50,6 +50,7 @@ Adds a new route to the mockServer. Returns a promise.
 * **method**: method of request, eg. `GET`
 * **response**: Response object
 	* **body**, eg. `{data: "hello"}`
+	* **statusCode**, eg. `200`
 	* **headers**, eg. `{"Content-Type": "application/json"}`
 
 #### mockClient.getRequests()

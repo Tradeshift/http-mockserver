@@ -6,13 +6,12 @@ const server = http.Server(app);
 app.use(bodyParser.json());
 const controller = require('./controller');
 
-app.get('/listener/:port', controller.getListener);
 app.post('/listener/:port', controller.addListenerOrRoute);
 app.delete('/listener/:port', controller.removeListener);
 
 app.post('/listener/:port/chunk', controller.sendChunk);
 
-app.get('/listener', controller.getListeners);
+app.get('/listener/:port?', controller.getListeners);
 app.delete('/clear', controller.clear);
 
 app.get('/requests/:port?', controller.getRequests);

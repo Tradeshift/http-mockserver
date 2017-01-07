@@ -4,6 +4,9 @@
 	"uri": "/users",
 	"response": {
 		"statusCode": 200,
+		"headers": {
+			"X-Custom-Header": "This rocks"
+		},
 		"body": {
 			"a": "this is the response body"
 		}
