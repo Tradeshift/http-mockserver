@@ -14,7 +14,7 @@ app.post('/listener/:port/chunk', controller.sendChunk);
 app.get('/listener/:port?', controller.getListeners);
 app.delete('/clear', controller.clear);
 
-app.get('/requests/:port?', controller.getRequests);
+app.get('/requests/:port?', controller.getRequestLogs);
 
 app.use((err, req, res, next) => {
 	console.error(err.stack);
