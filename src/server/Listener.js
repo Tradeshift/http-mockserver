@@ -1,19 +1,35 @@
 const _ = require('lodash');
+const bodyParser = require('body-parser');
+const enableDestroy = require('server-destroy');
+const express = require('express');
+const http = require('http');
 const httpProxy = require('http-proxy');
-const requestService = require('./requestService');
+const requestLogService = require('./requestLogService');
 
 class Listener {
-	constructor ({ port, app, server }) {
+	// Create new listener
+	constructor (port) {
+		const app = express();
+		app.use(bodyParser.json());
+		app.use((req, res, next) => {
+			requestLogService.addEntry(req, res);
+			next();
+		});
+
+		console.log(`Added listener on port ${port}`);
+
 		this.port = port;
 		this.routes = {};
 		this.app = app;
-		this.server = server;
+		this.server = createServer(port, app);
 	}
 
+	// Get route
 	get (uri, method) {
 		return _.get(this.routes[uri], method);
 	}
 
+	// Add route
 	add (uri, method, options) {
 		this.routes[uri] = this.routes[uri] || {};
 		this.routes[uri][method] = {
@@ -56,10 +72,9 @@ class Listener {
 	getSimpleRouteHandler (options) {
 		const {uri, response, method} = options;
 		const statusCode = response.statusCode || 200;
-		console.log('Added route', reqFm(method, this.port, uri));
+		console.log(reqFm(method, this.port, uri), '(simple)');
 		return (req, res) => {
-			requestService.addRequest(req, 'simple');
-			console.log(reqFm(req.method, this.port, req.originalUrl), `(Response: ${statusCode})`);
+			requestLogService.setEntryType(req.id, 'simple');
 			res.set(response.headers);
 			res.status(statusCode).send(response.body);
 		};
@@ -67,8 +82,11 @@ class Listener {
 
 	getDynamicRouteHandler (options) {
 		const { uri, method, handler } = options;
-		console.log('Added dynamic route', reqFm(method, this.port, uri));
-		return handler;
+		console.log(reqFm(method, this.port, uri), '(dynamic)');
+		return (req, res) => {
+			requestLogService.setEntryType(req.id, 'dynamic');
+			return handler(req, res);
+		};
 	}
 
 	getProxyRouteHandler (options) {
@@ -77,10 +95,9 @@ class Listener {
 		const targetPort = options.proxy.target.substring(options.proxy.target.lastIndexOf(':') + 1);
 		const proxy = httpProxy.createProxyServer(options.proxy);
 
-		console.log(`Added proxy route ${reqFm(method, srcPort, uri)} -> ${reqFm(method, targetPort, uri)}`);
+		console.log(`${reqFm(method, srcPort, uri)} -> ${reqFm(method, targetPort, uri)}`, '(proxy)');
 		return (req, res) => {
-			requestService.addRequest(req, 'proxy');
-			console.log(`${reqFm(req.method, srcPort, req.url)} -> ${reqFm(req.method, targetPort, req.url)} (Proxying)`);
+			requestLogService.setEntryType(req.id, 'proxy');
 			proxy.web(req, res, e => {
 				console.error(e);
 				res.statusCode = 500;
@@ -92,10 +109,9 @@ class Listener {
 	getStreamingRouteHandler (options) {
 		const { uri, method } = options;
 
-		console.log('Added streaming route', reqFm(method, this.port, uri));
+		console.log(reqFm(method, this.port, uri), '(streaming)');
 		return (req, res) => {
-			requestService.addRequest(req, 'streaming');
-			console.log(reqFm(req.method, this.port, req.originalUrl), '(Streaming)');
+			requestLogService.setEntryType(req.id, 'streaming');
 			const route = this.get(uri, method);
 			req.on('close', () => _.pull(route.clients, res)); // Remove listener
 			route.clients.push(res); // Add listener
@@ -114,7 +130,14 @@ class Listener {
 }
 
 function reqFm (method, port, uri, statusCode = '') {
-	return `${method.toUpperCase()} localhost:${port}${uri} ${statusCode}`;
+	return `${method.toUpperCase()} http://localhost:${port}${uri} ${statusCode}`;
+}
+
+function createServer (port, app) {
+	const server = http.Server(app);
+	server.listen(port);
+	enableDestroy(server);
+	return server;
 }
 
 module.exports = Listener;

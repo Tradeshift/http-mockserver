@@ -1,14 +1,9 @@
-const express = require('express');
-const http = require('http');
-const bodyParser = require('body-parser');
-const enableDestroy = require('server-destroy');
 const Listener = require('./Listener');
-const requestService = require('./requestService');
 
 const listeners = {};
 const listenerService = {};
 
-listenerService.get = function (port) {
+listenerService.getListener = function (port) {
 	const listener = listeners[port];
 	if (!listener) {
 		throw new Error(`Can't get listener. No listener exists on ${port}`);
@@ -16,28 +11,26 @@ listenerService.get = function (port) {
 	return listener;
 };
 
-listenerService.add = function (port) {
+listenerService.addListener = function (port) {
 	if (listeners[port]) {
 		throw new Error(`Listener already exists: ${port}`);
 	}
 
-	const app = express();
-	app.use(bodyParser.json());
-	app.use((req, res, next) => {
-		requestService.addRequest(req, 'pending');
-		next();
-	});
-
-	console.log(`Added listener on port ${port}`);
-	const server = createServer(port, app);
-
-	const listener = new Listener({ port, app, server });
+	const listener = new Listener(port);
 	listeners[port] = listener;
 	return listener;
 };
 
 listenerService.addRoute = function (port, options) {
-	const listener = listeners[port] || listenerService.add(port);
+	if (!options.method) {
+		throw new Error(`"method" required. port=${port} uri=${options.uri}`);
+	}
+
+	if (!options.uri) {
+		throw new Error(`"uri" required. port=${port}`);
+	}
+
+	const listener = listeners[port] || listenerService.addListener(port);
 	const hasRoute = listener.get(options.uri, options.method);
 	if (hasRoute) {
 		throw new Error(`Route already exists: ${options.uri}`);
@@ -46,7 +39,7 @@ listenerService.addRoute = function (port, options) {
 	listener.add(options.uri, options.method, options);
 };
 
-listenerService.remove = function (port) {
+listenerService.removeListener = function (port) {
 	if (!listeners[port]) {
 		throw new Error(`Can't remove listener. No listener exists on ${port}`);
 	}
@@ -66,18 +59,11 @@ listenerService.sendChunk = function (port, uri, chunk) {
 
 // Remove listeners
 listenerService.clear = function () {
-	Object.keys(listeners).forEach(port => listenerService.remove(port));
+	Object.keys(listeners).forEach(port => listenerService.removeListener(port));
 };
 
 listenerService.getAll = function () {
 	return listeners;
 };
-
-function createServer (port, app) {
-	const server = http.Server(app);
-	server.listen(port);
-	enableDestroy(server);
-	return server;
-}
 
 module.exports = listenerService;

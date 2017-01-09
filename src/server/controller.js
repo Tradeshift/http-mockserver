@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const listenerService = require('./listenerService');
-const requestService = require('./requestService');
+const requestLogService = require('./requestLogService');
 const controller = {};
 
 controller.addListenerOrRoute = (req, res) => {
@@ -10,14 +10,6 @@ controller.addListenerOrRoute = (req, res) => {
 	if (_.isEmpty(options)) {
 		listenerService.addListener(port);
 	} else {
-		if (!options.method) {
-			throw new Error(`"method" required. port=${port} uri=${options.uri}`);
-		}
-
-		if (!options.uri) {
-			throw new Error(`"uri" required. port=${port}`);
-		}
-
 		listenerService.addRoute(port, options);
 	}
 
@@ -25,7 +17,7 @@ controller.addListenerOrRoute = (req, res) => {
 };
 
 controller.removeListener = (req, res) => {
-	listenerService.remove(req.params.port);
+	listenerService.removeListener(req.params.port);
 	res.sendStatus(200);
 };
 
@@ -50,21 +42,21 @@ controller.getListeners = (req, res) => {
 		return;
 	}
 
-	const listener = listenerService.get(port);
+	const listener = listenerService.getListener(port);
 	res.json(listener.toString());
 };
 
 controller.clear = (req, res) => {
 	listenerService.clear();
-	requestService.clear();
+	requestLogService.clear();
 	res.sendStatus(200);
 };
 
-controller.getRequests = (req, res) => {
+controller.getRequestLogs = (req, res) => {
 	const port = parseInt(req.params.port, 10);
 	const type = req.query.type;
-	const requests = requestService.getRequests(port, type);
-	res.json(requests);
+	const logEntries = requestLogService.getEntries(port, type);
+	res.json(logEntries);
 };
 
 module.exports = controller;
