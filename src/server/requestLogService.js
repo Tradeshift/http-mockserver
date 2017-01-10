@@ -30,7 +30,7 @@ service.addEntry = function (req, res) {
 		entry.res = {
 			statusCode: res.statusCode,
 			headers: res._headers,
-			body: args[0].toString('utf8')
+			body: _.toString(args[0])
 		};
 
 		console.log(reqFm(req.method, entry.req.port, req.originalUrl, res.statusCode));
