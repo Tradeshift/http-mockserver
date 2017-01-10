@@ -1,4 +1,5 @@
 const Q = require('q');
+const _ = require('lodash');
 const { format } = require('url');
 const request = Q.denodeify(require('request'));
 
@@ -96,7 +97,12 @@ class MockClient {
 			host: this.serverHost
 		});
 
-		return request(options).spread((response, error) => response);
+		return request(options).spread((response, body) => {
+			if (_.inRange(response.statusCode, 400, 600)) {
+				throw new Error(`Request failed: ${request.method} ${request.href} with status=${response.statusCode}, body=${body}`);
+			}
+			return response;
+		});
 	}
 }
 
