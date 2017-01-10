@@ -5,7 +5,8 @@ const request = Q.denodeify(require('request'));
 
 class MockClient {
 
-	constructor (port, serverHost) {
+	constructor (port, serverHost, debugMode) {
+		this.debugMode = debugMode;
 		this.port = port;
 		this.serverHost = serverHost;
 	}
@@ -72,6 +73,7 @@ class MockClient {
 	}
 
 	addRoute (options) {
+		this.log('Adding route', options);
 		return this.req({
 			uri: '/listener/' + this.port,
 			method: 'POST',
@@ -97,12 +99,18 @@ class MockClient {
 			host: this.serverHost
 		});
 
-		return request(options).spread((response, body) => {
+		return request(options).spread((response) => {
 			if (_.inRange(response.statusCode, 400, 600)) {
-				throw new Error(`Request failed: ${request.method} ${request.href} with status=${response.statusCode}, body=${body}`);
+				throw new Error(`Request failed: options=${JSON.stringify(options)}, response=${response.body}`);
 			}
 			return response;
 		});
+	}
+
+	log (...args) {
+		if (this.debugMode) {
+			console.log.apply(console, args);
+		}
 	}
 }
 
