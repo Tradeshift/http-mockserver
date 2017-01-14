@@ -32,14 +32,20 @@ class Listener {
 	// Add route
 	add (uri, method, options) {
 		this.routes[uri] = this.routes[uri] || {};
+
+		// Register route if it hasn't been registered before
+		if (!this.routes[uri][method]) {
+			this.app[method.toLowerCase()](uri, (req, res) => {
+				return this.routes[uri][method].handler(req, res);
+			});
+		}
+
 		this.routes[uri][method] = {
 			options: options,
 			clients: [],
-			chunks: []
+			chunks: [],
+			handler: this.getRouteHandler(options)
 		};
-
-		const routeHandler = this.getRouteHandler(options);
-		this.app[method.toLowerCase()](uri, routeHandler);
 	}
 
 	destroy () {
