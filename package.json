@@ -3,10 +3,14 @@
   "description": "Testing made easy with mocked http servers",
   "version": "1.1.5",
   "license": "MIT",
+  "jest": {
+    "verbose": true
+  },
   "scripts": {
     "start": "./bin/http-mockserver.js",
     "debug": "node --inspect --debug-brk src/server/index.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "test": "./test.sh"
   },
   "bin": {
     "http-mockserver": "./bin/http-mockserver.js"
@@ -36,6 +40,7 @@
     "eslint": "3.13.0",
     "eslint-config-standard": "6.2.1",
     "eslint-plugin-promise": "3.4.0",
-    "eslint-plugin-standard": "2.0.1"
+    "eslint-plugin-standard": "2.0.1",
+    "jest": "18.1.0"
   }
 }

@@ -65,7 +65,7 @@ class Listener {
 
 	getRouteHandler (options) {
 		if (options.response) {
-			return this.getSimpleRouteHandler(options);
+			return this.getStaticRouteHandler(options);
 		} else if (options.handler) {
 			return this.getDynamicRouteHandler(options);
 		} else if (options.proxy) {
@@ -75,17 +75,19 @@ class Listener {
 		}
 	}
 
-	getSimpleRouteHandler (options) {
+	// Returns static response
+	getStaticRouteHandler (options) {
 		const {uri, response, method} = options;
 		const statusCode = response.statusCode || 200;
-		console.log(reqFm(method, this.port, uri), '(simple)');
+		console.log(reqFm(method, this.port, uri), '(static)');
 		return (req, res) => {
-			requestLogService.setEntryType(req.id, 'simple');
+			requestLogService.setEntryType(req.id, 'static');
 			res.set(response.headers);
 			res.status(statusCode).send(response.body);
 		};
 	}
 
+	// Returns dynamic handler that can change the response depending on the request
 	getDynamicRouteHandler (options) {
 		const { uri, method, handler } = options;
 		console.log(reqFm(method, this.port, uri), '(dynamic)');
@@ -95,6 +97,7 @@ class Listener {
 		};
 	}
 
+	// Proxies the request to another route
 	getProxyRouteHandler (options) {
 		const srcPort = this.port;
 		const { uri, method } = options;
@@ -112,6 +115,7 @@ class Listener {
 		};
 	}
 
+	// Returns a "keep-alive" response which can transport chunked responses
 	getStreamingRouteHandler (options) {
 		const { uri, method } = options;
 

@@ -4,7 +4,7 @@ module.exports = function (addRoute) {
 	addRoute({
 		port: 2020,
 		method: 'GET',
-		uri: '/sqren',
+		uri: '/dynamic-mock-example',
 		handler: function (req, res) {
 			counter++;
 			res.send(`Counter: ${counter}`);
