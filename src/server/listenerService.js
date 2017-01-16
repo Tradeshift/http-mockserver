@@ -33,7 +33,7 @@ listenerService.addRoute = function (port, options) {
 	const listener = listeners[port] || listenerService.addListener(port);
 	const hasRoute = listener.get(options.uri, options.method);
 	if (hasRoute) {
-		throw new Error(`Route already exists: ${options.uri}`);
+		console.log(`Overwriting route: ${options.method} http://localhost:${port}${options.uri}`);
 	}
 
 	listener.add(options.uri, options.method, options);
