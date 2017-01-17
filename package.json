@@ -10,7 +10,8 @@
     "start": "./bin/http-mockserver.js",
     "debug": "node --inspect --debug-brk src/server/index.js",
     "lint": "eslint ./src",
-    "test": "./test.sh"
+    "test": "./test.sh",
+    "version": "echo $npm_package_version"
   },
   "bin": {
     "http-mockserver": "./bin/http-mockserver.js"
