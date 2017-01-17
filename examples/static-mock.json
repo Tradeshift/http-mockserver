@@ -1,14 +1,14 @@
 {
-	"port": 8888,
+	"port": 2021,
 	"method": "GET",
-	"uri": "/users",
+	"uri": "/static-mock-example",
 	"response": {
 		"statusCode": 200,
 		"headers": {
 			"X-Custom-Header": "This rocks"
 		},
 		"body": {
-			"a": "this is the response body"
+			"someKey": "some value"
 		}
 	}
 }
