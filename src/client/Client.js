@@ -3,12 +3,13 @@ const _ = require('lodash');
 const { format } = require('url');
 const request = Q.denodeify(require('request'));
 
+let serverHost;
+
 class MockClient {
 
-	constructor (port, serverHost, debugMode) {
+	constructor (port, debugMode) {
 		this.debugMode = debugMode;
 		this.port = port;
-		this.serverHost = serverHost;
 	}
 
 	isListening () {
@@ -17,21 +18,21 @@ class MockClient {
 	}
 
 	getListener () {
-		return this.req({
+		return req({
 			uri: '/listener/' + this.port,
 			method: 'GET'
 		});
 	}
 
 	listen () {
-		return this.req({
+		return req({
 			uri: '/listener/' + this.port,
 			method: 'POST'
 		});
 	}
 
 	getRequests () {
-		return this.req({
+		return req({
 			uri: '/requests/' + this.port,
 			method: 'GET'
 		})
@@ -51,15 +52,8 @@ class MockClient {
 	}
 
 	removeListener () {
-		return this.req({
+		return req({
 			uri: '/listener/' + this.port,
-			method: 'DELETE'
-		});
-	}
-
-	clear () {
-		return this.req({
-			uri: '/clear',
 			method: 'DELETE'
 		});
 	}
@@ -74,7 +68,7 @@ class MockClient {
 
 	addRoute (options) {
 		this.log('Adding route', options);
-		return this.req({
+		return req({
 			uri: '/listener/' + this.port,
 			method: 'POST',
 			json: options
@@ -86,24 +80,10 @@ class MockClient {
 	}
 
 	sendData (options) {
-		return this.req({
+		return req({
 			uri: '/listener/' + this.port + '/chunk',
 			method: 'POST',
 			json: options
-		});
-	}
-
-	req (options) {
-		options.baseUrl = format({
-			protocol: 'http',
-			host: this.serverHost
-		});
-
-		return request(options).spread((response) => {
-			if (_.inRange(response.statusCode, 400, 600)) {
-				throw new Error(`Request failed: options=${JSON.stringify(options)}, response=${response.body}`);
-			}
-			return response;
 		});
 	}
 
@@ -112,6 +92,30 @@ class MockClient {
 			console.log.apply(console, args);
 		}
 	}
+
+	static clearAll () {
+		return req({
+			uri: '/clear',
+			method: 'DELETE'
+		});
+	}
 }
 
-module.exports = MockClient;
+function req (options) {
+	options.baseUrl = format({
+		protocol: 'http',
+		host: serverHost
+	});
+
+	return request(options).spread((response) => {
+		if (_.inRange(response.statusCode, 400, 600)) {
+			throw new Error(`Request failed: options=${JSON.stringify(options)}, response=${response.body}`);
+		}
+		return response;
+	});
+}
+
+module.exports = (_serverHost = 'localhost:3000') => {
+	serverHost = _serverHost;
+	return MockClient;
+};

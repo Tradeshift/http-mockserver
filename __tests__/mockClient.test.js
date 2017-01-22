@@ -1,9 +1,9 @@
 const Q = require('q');
 const request = Q.denodeify(require('request'));
-const MockClient = require('../src/client/Client');
 const MOCKSERVER_URI = 'localhost:3000';
+const MockClient = require('../src/client/Client')(MOCKSERVER_URI);
 const MOCKED_HOST_URI = 'http://localhost:4000';
-const mockClient = new MockClient(4000, MOCKSERVER_URI);
+const mockClient = new MockClient(4000);
 
 describe('when adding routes on the same uri', () => {
 	it('should return first response when route is added once', done => {
@@ -63,7 +63,7 @@ describe('clean', () => {
 	});
 
 	it('should not be possible to call the route after it has been cleared', done => {
-		mockClient.clear()
+		MockClient.clearAll()
 
 		// requests are cleared
 		.then(() => mockClient.getRequests())
@@ -81,4 +81,5 @@ describe('clean', () => {
 	});
 });
 
-afterEach(() => mockClient.clear());
+afterEach(() => MockClient.clearAll());
+
