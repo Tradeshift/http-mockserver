@@ -24,7 +24,7 @@ class MockClient {
 		});
 	}
 
-	listen () {
+	addListener () {
 		return req({
 			uri: '/listener/' + this.port,
 			method: 'POST'
@@ -67,9 +67,10 @@ class MockClient {
 	}
 
 	addRoute (options) {
+		options.port = this.port;
 		this.log('Adding route', options);
 		return req({
-			uri: '/listener/' + this.port,
+			uri: '/listener/',
 			method: 'POST',
 			json: options
 		});

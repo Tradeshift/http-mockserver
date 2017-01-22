@@ -30,7 +30,8 @@ class Listener {
 	}
 
 	// Add route
-	add (uri, method, options) {
+	add (options) {
+		const {uri, method} = options;
 		this.routes[uri] = this.routes[uri] || {};
 
 		// Register route if it hasn't been registered before
