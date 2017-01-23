@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-const startMockServer = require('../src/server/index.js');
-const configInitializer = require('./configInitializer');
+const mockServer = require('../src/server/index.js');
 const yargs = require('yargs');
 
 const argv = yargs
@@ -21,12 +20,15 @@ const argv = yargs
 		default: 3000
 	})
 
+	.alias('v', 'version')
+	.version(require('../package').version)
+
 	.help('help')
 	.demand(0)
 	.argv;
 
 if (argv.mocks) {
-	configInitializer.registerMocks(argv.mocks);
+	mockServer.addMocks(argv.mocks);
 }
 
-startMockServer(argv.port);
+mockServer.start(argv.port);
