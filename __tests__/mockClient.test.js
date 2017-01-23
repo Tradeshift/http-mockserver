@@ -5,17 +5,17 @@ const MockClient = require('../src/client/Client')(MOCKSERVER_URI);
 const MOCKED_HOST_URI = 'http://localhost:4000';
 const mockClient = new MockClient(4000);
 
-describe('when adding routes on the same uri', () => {
-	it('should return first response when route is added once', done => {
-		mockClient.addRoute({
-			uri: '/duplicate-route',
+describe('when adding mocks on the same uri', () => {
+	it('should return first mock', done => {
+		mockClient.addMock({
+			uri: '/duplicate-mock',
 			method: 'GET',
 			response: {
 				body: 'First response'
 			}
 		})
 		.then(() => {
-			return request(`${MOCKED_HOST_URI}/duplicate-route`).spread((response, body) => {
+			return request(`${MOCKED_HOST_URI}/duplicate-mock`).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(body).toBe('First response');
 			});
@@ -23,16 +23,16 @@ describe('when adding routes on the same uri', () => {
 		.then(done, done.fail);
 	});
 
-	it('should return second response when route it overwritten', done => {
-		mockClient.addRoute({
-			uri: '/duplicate-route',
+	it('should return second mock', done => {
+		mockClient.addMock({
+			uri: '/duplicate-mock',
 			method: 'GET',
 			response: {
 				body: 'Second response'
 			}
 		})
 		.then(() => {
-			return request(`${MOCKED_HOST_URI}/duplicate-route`).spread((response, body) => {
+			return request(`${MOCKED_HOST_URI}/duplicate-mock`).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(body).toBe('Second response');
 			});
@@ -42,9 +42,9 @@ describe('when adding routes on the same uri', () => {
 });
 
 describe('clean', () => {
-	it('should be possible to add a route and call it', done => {
-		// Add route
-		mockClient.addRoute({
+	it('should return a mock when it has been added', done => {
+		// Add mock
+		mockClient.addMock({
 			uri: '/test',
 			method: 'get',
 			response: {
@@ -52,7 +52,7 @@ describe('clean', () => {
 			}
 		})
 
-		// Route can be called
+		// Mock should be returned
 		.then(() => {
 			return request(`${MOCKED_HOST_URI}/test`).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
@@ -62,16 +62,16 @@ describe('clean', () => {
 		.then(done, done.fail);
 	});
 
-	it('should not be possible to call the route after it has been cleared', done => {
+	it('should not return a mock after it has been cleared', done => {
 		MockClient.clearAll()
 
-		// requests are cleared
+		// Requests should be cleared
 		.then(() => mockClient.getRequests())
 		.then(res => {
 			expect(res).toEqual([]);
 		})
 
-		// Route can no longer be called
+		// Mock should not be returned
 		.then(() => {
 			request(`${MOCKED_HOST_URI}/test`)
 				.then(done.fail)

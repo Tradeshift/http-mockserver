@@ -46,7 +46,7 @@ function parseJsonFile (filename, mockConfigs) {
 	mockConfigs = Array.isArray(mockConfigs) ? mockConfigs : [mockConfigs];
 
 	try {
-		mockConfigs.map(listenerService.addRoute);
+		mockConfigs.map(listenerService.addMock);
 	} catch (e) {
 		console.log(`Error parsing ${filename}`, e);
 	}
@@ -54,7 +54,7 @@ function parseJsonFile (filename, mockConfigs) {
 
 function parseJsFile (filename, handler) {
 	try {
-		return handler(listenerService.addRoute);
+		return handler(listenerService.addMock);
 	} catch (e) {
 		console.log(`Error parsing ${filename}`, e);
 	}

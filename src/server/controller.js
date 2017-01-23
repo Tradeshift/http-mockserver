@@ -9,9 +9,9 @@ controller.addListener = (req, res) => {
 	res.sendStatus(200);
 };
 
-controller.addRoute = (req, res) => {
+controller.addMock = (req, res) => {
 	const options = req.body;
-	listenerService.addRoute(options);
+	listenerService.addMock(options);
 	res.sendStatus(200);
 };
 

@@ -1,7 +1,7 @@
 let counter = 0;
 
-module.exports = function (addRoute) {
-	addRoute({
+module.exports = function (addMock) {
+	addMock({
 		port: 2020,
 		method: 'GET',
 		uri: '/dynamic-mock-example',
