@@ -63,7 +63,7 @@ function parseJsFile (filename, handler) {
 mockFileReader.addMocks = function (filePaths = []) {
 	filePaths = Array.isArray(filePaths) ? filePaths : [filePaths];
 
-	filePaths.forEach(filePath => {
+	const promises = filePaths.map(filePath => {
 		const isFile = fs.lstatSync(filePath).isFile();
 		if (isFile) {
 			const file = getFile(filePath);
@@ -78,6 +78,8 @@ mockFileReader.addMocks = function (filePaths = []) {
 				console.log(`Error loading files ${filePath}`, err);
 			});
 	});
+
+	return Q.all(promises);
 };
 
 module.exports = mockFileReader;

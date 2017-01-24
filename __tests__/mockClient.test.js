@@ -1,11 +1,15 @@
 const Q = require('q');
 const request = Q.denodeify(require('request'));
 const MOCKSERVER_URI = 'localhost:3000';
+const mockServer = require('../src/server/index.js');
 const MockClient = require('../src/client/Client')(MOCKSERVER_URI);
 const MOCKED_HOST_URI = 'http://localhost:4000';
 const mockClient = new MockClient(4000);
 
 describe('when adding mocks on the same uri', () => {
+	beforeAll(() => mockServer.start());
+	afterAll(mockServer.stop);
+
 	it('should return first mock', done => {
 		mockClient.addMock({
 			uri: '/duplicate-mock',
@@ -42,6 +46,9 @@ describe('when adding mocks on the same uri', () => {
 });
 
 describe('clean', () => {
+	beforeAll(() => mockServer.start());
+	afterAll(mockServer.stop);
+
 	it('should return a mock when it has been added', done => {
 		// Add mock
 		mockClient.addMock({
@@ -80,6 +87,3 @@ describe('clean', () => {
 		.then(done, done.fail);
 	});
 });
-
-afterEach(() => MockClient.clearAll());
-

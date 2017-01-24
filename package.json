@@ -1,16 +1,17 @@
 {
   "name": "http-mockserver",
   "description": "Testing made easy with mocked http servers",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "license": "MIT",
   "jest": {
-    "verbose": true
+    "verbose": false,
+    "testEnvironment": "node"
   },
   "scripts": {
     "start": "./bin/http-mockserver.js",
     "debug": "node --inspect --debug-brk src/server/index.js",
     "lint": "eslint ./src",
-    "test": "./test.sh"
+    "test": "jest"
   },
   "bin": {
     "http-mockserver": "./bin/http-mockserver.js"

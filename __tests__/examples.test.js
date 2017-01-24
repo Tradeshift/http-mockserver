@@ -1,7 +1,11 @@
 const Q = require('q');
 const request = Q.denodeify(require('request'));
+const mockServer = require('../src/server/index.js');
 
 describe('examples', () => {
+	beforeAll(() => mockServer.addMocks('./examples').start());
+	afterAll(mockServer.stop);
+
 	it('static mock', done => {
 		return request('http://localhost:2021/static-mock-example', {json: true}).spread((response, body) => {
 			expect(response.statusCode).toBe(200);

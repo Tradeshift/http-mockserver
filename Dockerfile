@@ -6,7 +6,6 @@ RUN npm install
 
 COPY ./bin ./bin
 COPY ./__tests__ ./__tests__
-COPY ./test.sh ./test.sh
 COPY ./examples ./examples
 COPY ./src ./src
 
