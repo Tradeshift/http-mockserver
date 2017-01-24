@@ -21,22 +21,19 @@ listenerService.addListener = function (port) {
 	return listener;
 };
 
-listenerService.addRoute = function (port, options) {
-	if (!options.method) {
-		throw new Error(`"method" required. port=${port} uri=${options.uri}`);
-	}
-
-	if (!options.uri) {
-		throw new Error(`"uri" required. port=${port}`);
+listenerService.addMock = function (options) {
+	const port = options.port;
+	if (!options.port || !options.method || !options.uri) {
+		throw new Error(`"port", "method" and "uri" required. options=${options}`);
 	}
 
 	const listener = listeners[port] || listenerService.addListener(port);
-	const hasRoute = listener.get(options.uri, options.method);
-	if (hasRoute) {
-		console.log(`Overwriting route: ${options.method} http://localhost:${port}${options.uri}`);
+	const hasMock = listener.get(options.uri, options.method);
+	if (hasMock) {
+		console.log(`Overwriting mock: ${options.method} http://localhost:${port}${options.uri}`);
 	}
 
-	listener.add(options.uri, options.method, options);
+	listener.add(options);
 };
 
 listenerService.removeListener = function (port) {

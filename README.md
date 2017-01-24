@@ -16,8 +16,8 @@ const { MockClient } = require('http-mockserver');
 const mockServerHost = 'localhost:3000'; // Connect to MockServer on localhost:3000
 const myMockClient = new MockClient(8888, mockServerHost); // start a mockServer instance on port 8888
 
-// Setup route on localhost:8888/rest/users
-myMockClient.addRoute({
+// Setup mock on localhost:8888/rest/users
+myMockClient.addMock({
 	uri: '/rest/users',
 	method: 'GET',
 	response: {
@@ -42,8 +42,8 @@ $ http-mockserver --help
 ## Client API
 The following methods can be called on any MockClient instance
 
-#### mockClient.addRoute([options])
-Adds a new route to the mockServer. Returns a promise.
+#### mockClient.addMock([options])
+Add mock. Returns a promise.
 
 ##### Options:
 * **uri**: uri of request, eg. `/users/5345`

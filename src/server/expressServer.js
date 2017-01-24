@@ -6,10 +6,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const controller = require('./controller');
 
-app.post('/listener/:port', controller.addListenerOrRoute);
+app.post('/listener/:port', controller.addListener);
 app.delete('/listener/:port', controller.removeListener);
-
 app.post('/listener/:port/chunk', controller.sendChunk);
+
+app.post('/mocks', controller.addMock);
 
 app.get('/listener/:port?', controller.getListeners);
 app.delete('/clear', controller.clear);

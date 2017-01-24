@@ -3,16 +3,15 @@ const listenerService = require('./listenerService');
 const requestLogService = require('./requestLogService');
 const controller = {};
 
-controller.addListenerOrRoute = (req, res) => {
+controller.addListener = (req, res) => {
 	const port = req.params.port;
+	listenerService.addListener(port);
+	res.sendStatus(200);
+};
+
+controller.addMock = (req, res) => {
 	const options = req.body;
-
-	if (_.isEmpty(options)) {
-		listenerService.addListener(port);
-	} else {
-		listenerService.addRoute(port, options);
-	}
-
+	listenerService.addMock(options);
 	res.sendStatus(200);
 };
 

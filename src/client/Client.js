@@ -24,7 +24,7 @@ class MockClient {
 		});
 	}
 
-	listen () {
+	addListener () {
 		return req({
 			uri: '/listener/' + this.port,
 			method: 'POST'
@@ -59,24 +59,25 @@ class MockClient {
 	}
 
 	allowAll () {
-		return this.addRoute({
+		return this.addMock({
 			uri: '*',
 			method: 'GET',
 			response: {}
 		});
 	}
 
-	addRoute (options) {
-		this.log('Adding route', options);
+	addMock (options) {
+		options.port = this.port;
+		this.log('Adding mock', options);
 		return req({
-			uri: '/listener/' + this.port,
+			uri: '/mocks/',
 			method: 'POST',
 			json: options
 		});
 	}
 
-	addRoutes (...routes) {
-		return Q.all(routes.map(options => this.addRoute(options)));
+	addMocks (...mocks) {
+		return Q.all(mocks.map(mock => this.addMock(mock)));
 	}
 
 	sendData (options) {

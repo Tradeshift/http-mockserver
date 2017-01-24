@@ -19,32 +19,33 @@ class Listener {
 		console.log(`Added listener on port ${port}`);
 
 		this.port = port;
-		this.routes = {};
+		this.mocks = {};
 		this.app = app;
 		this.server = createServer(port, app);
 	}
 
-	// Get route
+	// Get mock
 	get (uri, method) {
-		return _.get(this.routes[uri], method);
+		return _.get(this.mocks[uri], method);
 	}
 
-	// Add route
-	add (uri, method, options) {
-		this.routes[uri] = this.routes[uri] || {};
+	// Add mock
+	add (options) {
+		const {uri, method} = options;
+		this.mocks[uri] = this.mocks[uri] || {};
 
-		// Register route if it hasn't been registered before
-		if (!this.routes[uri][method]) {
+		// Register mock if it hasn't been registered before
+		if (!this.mocks[uri][method]) {
 			this.app[method.toLowerCase()](uri, (req, res) => {
-				return this.routes[uri][method].handler(req, res);
+				return this.mocks[uri][method].handler(req, res);
 			});
 		}
 
-		this.routes[uri][method] = {
+		this.mocks[uri][method] = {
 			options: options,
 			clients: [],
 			chunks: [],
-			handler: this.getRouteHandler(options)
+			handler: this.getMockHandler(options)
 		};
 	}
 
@@ -53,30 +54,30 @@ class Listener {
 	}
 
 	sendChunk (uri, chunk) {
-		const route = this.get(uri, 'GET');
-		if (!route) {
-			throw new Error(`Route does not exist ${this.port}/${uri}`);
+		const mock = this.get(uri, 'GET');
+		if (!mock) {
+			throw new Error(`Mock does not exist ${this.port}/${uri}`);
 		}
 
-		route.clients.forEach(client => client.write(chunk));
-		route.chunks.push(chunk);
-		console.log('Chunk sent to', reqFm(route.options.method, this.port, uri));
+		mock.clients.forEach(client => client.write(chunk));
+		mock.chunks.push(chunk);
+		console.log('Chunk sent to', reqFm(mock.options.method, this.port, uri));
 	}
 
-	getRouteHandler (options) {
+	getMockHandler (options) {
 		if (options.response) {
-			return this.getStaticRouteHandler(options);
+			return this.getStaticMockHandler(options);
 		} else if (options.handler) {
-			return this.getDynamicRouteHandler(options);
+			return this.getDynamicMockHandler(options);
 		} else if (options.proxy) {
-			return this.getProxyRouteHandler(options);
+			return this.getProxyMockHandler(options);
 		} else {
-			return this.getStreamingRouteHandler(options);
+			return this.getStreamingMockHandler(options);
 		}
 	}
 
 	// Returns static response
-	getStaticRouteHandler (options) {
+	getStaticMockHandler (options) {
 		const {uri, response, method} = options;
 		const statusCode = response.statusCode || 200;
 		console.log(reqFm(method, this.port, uri), '(static)');
@@ -88,7 +89,7 @@ class Listener {
 	}
 
 	// Returns dynamic handler that can change the response depending on the request
-	getDynamicRouteHandler (options) {
+	getDynamicMockHandler (options) {
 		const { uri, method, handler } = options;
 		console.log(reqFm(method, this.port, uri), '(dynamic)');
 		return (req, res) => {
@@ -97,8 +98,8 @@ class Listener {
 		};
 	}
 
-	// Proxies the request to another route
-	getProxyRouteHandler (options) {
+	// Proxies the request to another mock
+	getProxyMockHandler (options) {
 		const srcPort = this.port;
 		const { uri, method } = options;
 		const targetPort = options.proxy.target.substring(options.proxy.target.lastIndexOf(':') + 1);
@@ -116,24 +117,24 @@ class Listener {
 	}
 
 	// Returns a "keep-alive" response which can transport chunked responses
-	getStreamingRouteHandler (options) {
+	getStreamingMockHandler (options) {
 		const { uri, method } = options;
 
 		console.log(reqFm(method, this.port, uri), '(streaming)');
 		return (req, res) => {
 			requestLogService.setEntryType(req.id, 'streaming');
-			const route = this.get(uri, method);
-			req.on('close', () => _.pull(route.clients, res)); // Remove listener
-			route.clients.push(res); // Add listener
-			route.chunks.forEach(chunk => res.write(chunk)); // Replay buffered chunks
+			const mock = this.get(uri, method);
+			req.on('close', () => _.pull(mock.clients, res)); // Remove listener
+			mock.clients.push(res); // Add listener
+			mock.chunks.forEach(chunk => res.write(chunk)); // Replay buffered chunks
 		};
 	}
 
 	toString () {
-		return _.mapValues(this.routes, (routes, uri) => {
-			return _.mapValues(routes, (route, method) => {
-				route.clientsCount = route.clients.length;
-				return _.omit(route, 'clients');
+		return _.mapValues(this.mocks, (mocks, uri) => {
+			return _.mapValues(mocks, (mock, method) => {
+				mock.clientsCount = mock.clients.length;
+				return _.omit(mock, 'clients');
 			});
 		});
 	}
