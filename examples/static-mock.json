@@ -1,4 +1,4 @@
-{
+[{
 	"port": 2021,
 	"method": "GET",
 	"uri": "/static-mock-example",
@@ -11,4 +11,22 @@
 			"someKey": "some value"
 		}
 	}
-}
+},
+{
+	"port": 2021,
+	"method": "GET",
+	"uri": "/static-mock-with-params-example/:name",
+	"response": {
+		"body": "My name is ${req.params.name}"
+	}
+},
+{
+	"port": 2021,
+	"method": "GET",
+	"uri": "/static-mock-with-params-json-example/:name",
+	"response": {
+		"body": {
+			"name": "${req.params.name}"
+		}
+	}
+}]

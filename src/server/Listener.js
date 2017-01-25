@@ -6,6 +6,7 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 const requestLogService = require('./requestLogService');
 const logService = require('./logService');
+const pathRegexp = require('path-to-regexp');
 
 class Listener {
 	// Create new listener
@@ -27,7 +28,12 @@ class Listener {
 
 	// Get mock
 	get (uri, method) {
-		return _.get(this.mocks[uri], method);
+		return _.chain(this.mocks)
+			.find((mock, mockUri) => {
+				return pathRegexp(mockUri, []).exec(uri);
+			})
+			.get(method)
+			.value();
 	}
 
 	// Add mock
@@ -83,9 +89,10 @@ class Listener {
 		const statusCode = response.statusCode || 200;
 		logService.info(reqFm(method, this.port, uri), '(static)');
 		return (req, res) => {
+			const body = replaceBodyPlaceholders(req, response.body);
 			requestLogService.setEntryType(req.id, 'static');
 			res.set(response.headers);
-			res.status(statusCode).send(response.body);
+			res.status(statusCode).send(body);
 		};
 	}
 
@@ -139,6 +146,18 @@ class Listener {
 			});
 		});
 	}
+}
+
+function replaceBodyPlaceholders (req, body) {
+	const isJSObject = _.isObject(body) && !Buffer.isBuffer(body);
+	if (!isJSObject && !_.isString(body)) {
+		return;
+	}
+
+	const regex = /\${req\.([\w.]+)}/g;
+	body = isJSObject ? JSON.stringify(body) : body;
+	body = body.replace(regex, (match, props) => _.get(req, props));
+	return isJSObject ? JSON.parse(body) : body;
 }
 
 function reqFm (method, port, uri, statusCode = '') {
