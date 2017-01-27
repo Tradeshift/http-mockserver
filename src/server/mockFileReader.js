@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const readDir = require('recursive-readdir');
 const listenerService = require('./listenerService.js');
+const logService = require('./logService');
 
 const mockFileReader = {};
 
@@ -30,7 +31,7 @@ function getFile (filename) {
 			content: require(path.resolve(filename))
 		};
 	} catch (e) {
-		console.log(`Error loading ${filename}`, e);
+		logService.info(`Error loading ${filename}`, e);
 		throw e;
 	}
 }
@@ -48,7 +49,7 @@ function parseJsonFile (filename, mockConfigs) {
 	try {
 		mockConfigs.map(listenerService.addMock);
 	} catch (e) {
-		console.log(`Error parsing ${filename}`, e);
+		logService.info(`Error parsing ${filename}`, e);
 	}
 }
 
@@ -56,7 +57,7 @@ function parseJsFile (filename, handler) {
 	try {
 		return handler(listenerService.addMock);
 	} catch (e) {
-		console.log(`Error parsing ${filename}`, e);
+		logService.info(`Error parsing ${filename}`, e);
 	}
 }
 
@@ -75,7 +76,7 @@ mockFileReader.addMocks = function (filePaths = []) {
 				return files.map(file => parseFile(file.name, file.content));
 			})
 			.catch(err => {
-				console.log(`Error loading files ${filePath}`, err);
+				logService.info(`Error loading files ${filePath}`, err);
 			});
 	});
 

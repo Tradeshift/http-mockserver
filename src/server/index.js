@@ -2,6 +2,7 @@ const Q = require('q');
 const listenerService = require('./listenerService');
 const expressServer = require('./expressServer');
 const mockFileReader = require('./mockFileReader');
+const logService = require('./logService');
 
 const mockServer = {};
 const promises = [];
@@ -9,7 +10,7 @@ const promises = [];
 mockServer.start = (port = 3000) => {
 	const promise = Q.Promise((resolve) => {
 		expressServer.listen(port, () => {
-			console.log(`Running http-mockserver on http://localhost:${port}`);
+			logService.info(`Running http-mockserver on http://localhost:${port}`);
 			resolve();
 		});
 	});

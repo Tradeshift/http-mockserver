@@ -1,4 +1,5 @@
 const Listener = require('./Listener');
+const logService = require('./logService');
 
 const listeners = {};
 const listenerService = {};
@@ -30,7 +31,7 @@ listenerService.addMock = function (options) {
 	const listener = listeners[port] || listenerService.addListener(port);
 	const hasMock = listener.get(options.uri, options.method);
 	if (hasMock) {
-		console.log(`Overwriting mock: ${options.method} http://localhost:${port}${options.uri}`);
+		logService.info(`Overwriting mock: ${options.method} http://localhost:${port}${options.uri}`);
 	}
 
 	listener.add(options);
@@ -43,7 +44,7 @@ listenerService.removeListener = function (port) {
 
 	listeners[port].destroy();
 	delete listeners[port];
-	console.log('Removed listener for', port);
+	logService.info('Removed listener for', port);
 };
 
 listenerService.sendChunk = function (port, uri, chunk) {
