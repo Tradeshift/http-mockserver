@@ -1,0 +1,8 @@
+{
+	"port": 2021,
+	"method": "GET",
+	"uri": "/parameterized-example/:name",
+	"response": {
+		"body": "My name is ${req.params.name}"
+	}
+}

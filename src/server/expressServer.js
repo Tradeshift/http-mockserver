@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const app = express();
 const bodyParser = require('body-parser');
+const logService = require('./logService');
 
 app.use(bodyParser.json());
 const controller = require('./controller');
@@ -18,7 +19,7 @@ app.delete('/clear', controller.clear);
 app.get('/requests/:port?', controller.getRequestLogs);
 
 app.use((err, req, res, next) => {
-	console.error(err.stack);
+	logService.error(err.stack);
 	res.status(400).send(err.message);
 });
 

@@ -30,6 +30,7 @@
     "express": "4.14.0",
     "http-proxy": "1.16.2",
     "lodash": "4.17.4",
+    "path-to-regexp": "1.7.0",
     "q": "1.4.1",
     "recursive-readdir": "2.1.0",
     "request": "2.79.0",

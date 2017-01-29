@@ -5,6 +5,8 @@ const express = require('express');
 const http = require('http');
 const httpProxy = require('http-proxy');
 const requestLogService = require('./requestLogService');
+const logService = require('./logService');
+const pathRegexp = require('path-to-regexp');
 
 class Listener {
 	// Create new listener
@@ -16,7 +18,7 @@ class Listener {
 			next();
 		});
 
-		console.log(`Added listener on port ${port}`);
+		logService.info(`Added listener on port ${port}`);
 
 		this.port = port;
 		this.mocks = {};
@@ -26,7 +28,12 @@ class Listener {
 
 	// Get mock
 	get (uri, method) {
-		return _.get(this.mocks[uri], method);
+		return _.chain(this.mocks)
+			.find((mock, mockUri) => {
+				return pathRegexp(mockUri, []).exec(uri);
+			})
+			.get(method)
+			.value();
 	}
 
 	// Add mock
@@ -61,7 +68,7 @@ class Listener {
 
 		mock.clients.forEach(client => client.write(chunk));
 		mock.chunks.push(chunk);
-		console.log('Chunk sent to', reqFm(mock.options.method, this.port, uri));
+		logService.info('Chunk sent to', reqFm(mock.options.method, this.port, uri));
 	}
 
 	getMockHandler (options) {
@@ -80,18 +87,19 @@ class Listener {
 	getStaticMockHandler (options) {
 		const {uri, response, method} = options;
 		const statusCode = response.statusCode || 200;
-		console.log(reqFm(method, this.port, uri), '(static)');
+		logService.info(reqFm(method, this.port, uri), '(static)');
 		return (req, res) => {
+			const body = replaceBodyPlaceholders(req, response.body);
 			requestLogService.setEntryType(req.id, 'static');
 			res.set(response.headers);
-			res.status(statusCode).send(response.body);
+			res.status(statusCode).send(body);
 		};
 	}
 
 	// Returns dynamic handler that can change the response depending on the request
 	getDynamicMockHandler (options) {
 		const { uri, method, handler } = options;
-		console.log(reqFm(method, this.port, uri), '(dynamic)');
+		logService.info(reqFm(method, this.port, uri), '(dynamic)');
 		return (req, res) => {
 			requestLogService.setEntryType(req.id, 'dynamic');
 			return handler(req, res);
@@ -105,11 +113,11 @@ class Listener {
 		const targetPort = options.proxy.target.substring(options.proxy.target.lastIndexOf(':') + 1);
 		const proxy = httpProxy.createProxyServer(options.proxy);
 
-		console.log(`${reqFm(method, srcPort, uri)} -> ${reqFm(method, targetPort, uri)}`, '(proxy)');
+		logService.info(`${reqFm(method, srcPort, uri)} -> ${reqFm(method, targetPort, uri)}`, '(proxy)');
 		return (req, res) => {
 			requestLogService.setEntryType(req.id, 'proxy');
 			proxy.web(req, res, e => {
-				console.error(e);
+				logService.error(e);
 				res.statusCode = 500;
 				res.end(e.message);
 			});
@@ -120,7 +128,7 @@ class Listener {
 	getStreamingMockHandler (options) {
 		const { uri, method } = options;
 
-		console.log(reqFm(method, this.port, uri), '(streaming)');
+		logService.info(reqFm(method, this.port, uri), '(streaming)');
 		return (req, res) => {
 			requestLogService.setEntryType(req.id, 'streaming');
 			const mock = this.get(uri, method);
@@ -138,6 +146,18 @@ class Listener {
 			});
 		});
 	}
+}
+
+function replaceBodyPlaceholders (req, body) {
+	const isJSObject = _.isObject(body) && !Buffer.isBuffer(body);
+	if (!isJSObject && !_.isString(body)) {
+		return;
+	}
+
+	const regex = /\${req\.([\w.]+)}/g;
+	body = isJSObject ? JSON.stringify(body) : body;
+	body = body.replace(regex, (match, props) => _.get(req, props));
+	return isJSObject ? JSON.parse(body) : body;
 }
 
 function reqFm (method, port, uri, statusCode = '') {

@@ -1,5 +1,6 @@
 const uuid = require('uuid/v4');
 const _ = require('lodash');
+const logService = require('./logService');
 
 const entries = [];
 const service = {};
@@ -33,7 +34,7 @@ service.addEntry = function (req, res) {
 			body: _.toString(args[0])
 		};
 
-		console.log(reqFm(req.method, entry.req.port, req.originalUrl, res.statusCode));
+		logService.info(reqFm(req.method, entry.req.port, req.originalUrl, res.statusCode));
 		endHandler.apply(res, args);
 	};
 };
