@@ -5,19 +5,26 @@ $ npm install --save http-mockserver
 
 ## Usage
 
-**Start mockServer**
+**Start mockServer from CLI**
 ```
-$ http-mockserver --port 3000
+$ http-mockserver
 ```
 
-**Connect to mockServer**
+or
+
+**Start mockServer from Node**
 ```js
-const { MockClient } = require('http-mockserver');
-const mockServerHost = 'localhost:3000'; // Connect to MockServer on localhost:3000
-const myMockClient = new MockClient(8888, mockServerHost); // start a mockServer instance on port 8888
+const { mockServer } = require('http-mockserver');
+mockServer.start();
+```
 
-// Setup mock on localhost:8888/rest/users
-myMockClient.addMock({
+**Add mock**
+```js
+const { mockClient } = require('http-mockserver');
+
+// Setup mock on localhost:4000/rest/users
+mockClient.addMock({
+	port: 4000,
 	uri: '/rest/users',
 	method: 'GET',
 	response: {
@@ -27,7 +34,31 @@ myMockClient.addMock({
 });
 ```
 
-## CLI options
+## Mock object
+To mock an endpoint, the mock should have the following structure:
+
+* **port**: port of request, eg. `4000`
+* **uri**: uri of request, eg. `/users/peter`
+* **method**: method of request, eg. `GET`
+* **response**: Response object
+	* **body**, eg. `{data: "hello"}`
+	* **statusCode**, eg. `404` (default: 200)
+	* **headers**, eg. `{"Content-Type": "application/json"}`
+
+**Example:**
+
+```json
+{
+	"port": 9090,
+	"method": "GET",
+	"uri": "/my-endpoint",
+	"response": {
+		"body": "hello world"
+	}
+}
+```
+
+## MockServer CLI Options
 ```
 $ http-mockserver --help
 
@@ -39,24 +70,46 @@ $ http-mockserver --help
     --mocks    Path to mock config files
 ```
 
-## Client API
-The following methods can be called on any MockClient instance
+## MockServer API
 
-#### mockClient.addMock([options])
+#### mockServer.start(port)
+Start mockserver on the specified port.
+
+Arguments:
+* **port**: Port of MockServer (default: 3000)
+
+#### mockServer.stop()
+Stop mockserver
+
+#### mockServer.addMock(mock)
+Add mock to mockserver without sending them over http. Apart from being faster, this allows for some more advanced mocks. See [dynamic mock example](https://github.com/Tradeshift/http-mockserver/blob/master/examples/dynamic-mock.js)
+
+Arguments:
+* **mock**: Mock options object. See [mock object](https://github.com/Tradeshift/http-mockserver/blob/master/README.md#mock-object) for details
+
+#### mockServer.addMocks(path)
+Add mocks to mockserver without sending them over http. Apart from being faster, this allows for some more advanced mocks. See [dynamic mock example](https://github.com/Tradeshift/http-mockserver/blob/master/examples/dynamic-mock.js)
+
+Arguments:
+* **path**: Path to mock file or folder, eg. `./mocks/`
+
+## MockClient API
+
+#### mockClient.addMock(mock)
 Add mock. Returns a promise.
 
-##### Options:
-* **uri**: uri of request, eg. `/users/5345`
-* **method**: method of request, eg. `GET`
-* **response**: Response object
-	* **body**, eg. `{data: "hello"}`
-	* **statusCode**, eg. `200`
-	* **headers**, eg. `{"Content-Type": "application/json"}`
+Arguments:
+* **mock**: Mock options object. See [mock object](https://github.com/Tradeshift/http-mockserver/blob/master/README.md#mock-object) for details
 
-#### mockClient.getRequests()
-
+#### mockClient.getRequests(port)
 Returns a promise with a list of requests made to the mockServer
 
 #### mockClient.clear()
-
 Removed all mocks and requests made to the mockServer
+
+#### mockClient.setServerHost(serverHost)
+Set hostname and port of mockserver
+
+serverHost: (Default: `localhost:3000`)
+
+

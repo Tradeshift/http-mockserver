@@ -23,6 +23,11 @@ mockServer.stop = () => {
 	expressServer.close();
 };
 
+mockServer.addMock = (mockConfig) => {
+	listenerService.addMock(mockConfig);
+	return Q(); // Fake promise to be consistent with client
+};
+
 mockServer.addMocks = (filePath) => {
 	const promise = mockFileReader.addMocks(filePath);
 	promises.push(promise);

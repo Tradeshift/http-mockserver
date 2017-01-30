@@ -1,7 +1,7 @@
 {
   "name": "http-mockserver",
   "description": "Testing made easy with mocked http servers",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "license": "MIT",
   "jest": {
     "verbose": false,

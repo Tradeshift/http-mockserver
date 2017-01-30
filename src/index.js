@@ -1,4 +1,4 @@
 module.exports = {
-	MockClient: require('./client/Client'),
+	mockClient: require('./client/client'),
 	mockServer: require('./server/index')
 };
