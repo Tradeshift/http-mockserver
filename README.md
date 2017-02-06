@@ -70,7 +70,7 @@ Arguments:
 Example:
 ```js
 const { mockServer } = require('http-mockserver');
-const backendService = mockClient.create(8888);
+const backendService = mockServer.create(8888);
 
 backendService.addMock({
 	uri: '/some/url/to/mock',
@@ -112,17 +112,18 @@ Arguments:
 Stop mockserver
 
 ## MockClient API
-The following methods are available only available on `mockClient`
+The following methods are available only available on `mockClient`.
+You only need to use the client if you are communicating with a mockServer that was started [from commandline](https://github.com/Tradeshift/http-mockserver#mockserver-cli-options) or by a separate Node process with [mockServer.start()](https://github.com/Tradeshift/http-mockserver#mockserverstartport). 
 
 #### mockClient.setServerHost(serverHost)
-Set hostname and port of mockserver. This is necessary if you start mockserver on a non-default port.
+Set hostname and port of mockserver. This is necessary if you start MockServer on another port than the default (port 3000).
 
 Arguments:
 * **serverHost**: Host of mockserver (Default: `localhost:3000`)
 
 ## MockServer CLI Options
-If you need to interact with the mockserver from non-Node languages, you can start it as a stand-alone process, and add mocks by interacting with the REST api.
-To start mockserver from command line `http-mockserver`.
+If you need to interact with the mockserver from other languages that Node.js, you can start it as a stand-alone process, and add mocks by interacting with the REST api.
+To start mockServer from the command-line run `http-mockserver`.
 You can also use the CLI tool to start a mockserver with some preconfigured mocks, and load them on startup with `http-mockserver --mocks ./mock-folder`
 
 ```
