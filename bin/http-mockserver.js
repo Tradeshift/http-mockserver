@@ -28,7 +28,7 @@ const argv = yargs
 	.argv;
 
 if (argv.mocks) {
-	mockServer.addMocks(argv.mocks);
+	mockServer.addMocksByPath(argv.mocks);
 }
 
 mockServer.start(argv.port);

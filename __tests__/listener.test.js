@@ -72,7 +72,7 @@ describe('listener', () => {
 	it('should match the uri method on paths with tokens', () => {
 		const tokenPath = '/path/:with/tokens/:and/:stuff';
 		listener.add({
-			method: 'DEL',
+			method: 'DELETE',
 			response: {},
 			uri: tokenPath
 		});

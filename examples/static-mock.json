@@ -1,7 +1,7 @@
 [{
 	"port": 2021,
 	"method": "GET",
-	"uri": "/static-mock-example",
+	"uri": "/simple-static-mock-example",
 	"response": {
 		"statusCode": 200,
 		"headers": {

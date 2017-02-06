@@ -2,7 +2,7 @@ const Q = require('q');
 const _ = require('lodash');
 const { format } = require('url');
 const request = Q.denodeify(require('request'));
-const ClientFactory = require('./ClientFactory');
+const MockServerFactory = require('../both/MockServerFactory');
 
 let serverHost = 'localhost:3000';
 let isDebugEnabled = false;
@@ -14,11 +14,6 @@ clientService.setServerHost = function (_serverHost) {
 
 clientService.enableDebug = function () {
 	isDebugEnabled = true;
-};
-
-clientService.isListening = function (port) {
-	return clientService.getListener(port)
-		.then(response => response.statusCode === 200);
 };
 
 clientService.getListener = function (port) {
@@ -56,9 +51,9 @@ clientService.waitForRequest = function (port, predicate, count = 1, delay = 500
 		.then(requests => {
 			if (requests.length === count) {
 				return requests;
-			} else {
-				return Q.delay(delay).then(() => clientService.waitForRequest(port, predicate, count, delay));
 			}
+
+			return Q.delay(delay).then(() => clientService.waitForRequest(port, predicate, count, delay));
 		});
 };
 
@@ -91,7 +86,7 @@ clientService.clearAll = function () {
 };
 
 clientService.create = function (port) {
-	return new ClientFactory(port, clientService);
+	return new MockServerFactory(port, clientService);
 };
 
 function log (...args) {

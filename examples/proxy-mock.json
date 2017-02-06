@@ -1,5 +1,5 @@
 {
-	"port": 8888,
+	"port": 2120,
 	"method": "GET",
 	"uri": "/company",
 	"proxy": {

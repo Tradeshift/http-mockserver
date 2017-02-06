@@ -36,26 +36,11 @@ function getFile (filename) {
 	}
 }
 
-function parseFile (filename, fileContent) {
-	switch (path.extname(filename)) {
-		case '.json': return parseJsonFile(filename, fileContent);
-		case '.js': return parseJsFile(filename, fileContent);
-	}
-}
-
-function parseJsonFile (filename, mockConfigs) {
+function parseFile (filename, mockConfigs) {
 	mockConfigs = Array.isArray(mockConfigs) ? mockConfigs : [mockConfigs];
 
 	try {
 		mockConfigs.map(listenerService.addMock);
-	} catch (e) {
-		logService.info(`Error parsing ${filename}`, e);
-	}
-}
-
-function parseJsFile (filename, handler) {
-	try {
-		return handler(listenerService.addMock);
 	} catch (e) {
 		logService.info(`Error parsing ${filename}`, e);
 	}
