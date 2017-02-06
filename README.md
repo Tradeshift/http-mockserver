@@ -58,6 +58,32 @@ Mock and endpoint of a port and route, with a specific response (static mock) or
 Arguments:
 * **mock**: Mock object. See [mock object](https://github.com/Tradeshift/http-mockserver/blob/master/README.md#mock-object) for details
 
+#### clearAll()
+Remove all mocks and clear the request log
+
+#### create(port)
+Returns a mockserver instance with the same API interface, but the methods do not require a port to be specified.
+
+Arguments:
+* **port**: Port number.
+
+Example:
+```js
+const { mockServer } = require('http-mockserver');
+const backendService = mockClient.create(8888);
+
+backendService.addMock({
+	uri: '/some/url/to/mock',
+	method: 'GET',
+	response: {
+		body: 'Hello world!'
+	}
+});
+
+$ curl localhost:8888/some/url/to/mock 
+"Hello world!"
+```
+
 #### getRequests([port])
 Returns request log. If port is specified, request will be filtered by this
 
@@ -72,9 +98,6 @@ Arguments:
 * **predicate**: The function invoked per iteration.
 * **count**: Exact number of request logs to match before returning
 * **delay**: Time between requests
-
-#### clearAll()
-Remove all mocks and clear the request log
 
 ## MockServer API
 The following methods are available only available on `mockServer`
@@ -111,6 +134,3 @@ $ http-mockserver --help
     --port     MockServer port, default: 3000
     --mocks    Path to mock config files
 ```
-
-
-
