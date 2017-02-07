@@ -12,7 +12,10 @@ class Listener {
 	// Create new listener
 	constructor (port) {
 		const app = express();
-		app.use(bodyParser.json());
+		app.use(bodyParser.json({
+			strict: false
+		}));
+		app.use(bodyParser.text());
 		app.use((req, res, next) => {
 			requestLogService.addEntry(req, res);
 			next();
