@@ -1,0 +1,23 @@
+[{
+    "port": 2021,
+    "method": "PUT",
+    "uri": "/bodyparser-example/without-json",
+    "bodyParsers": {
+        "json": false
+    },
+    "response": {
+        "body": "My name is ${req.body}"
+    }
+},{
+    "port": 2021,
+    "method": "PUT",
+    "uri": "/bodyparser-example/with-json",
+    "bodyParsers": {
+        "json": {
+            "strict": true
+        }
+    },
+    "response": {
+        "body": "My name is ${req.body}"
+    }
+}]

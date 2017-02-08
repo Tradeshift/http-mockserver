@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Listener = require('./Listener');
 const logService = require('./logService');
 
@@ -23,15 +24,26 @@ listenerService.addListener = function (port) {
 };
 
 listenerService.addMock = function (options) {
-	const port = options.port;
-	if (!options.port || !options.method || !options.uri) {
-		throw new Error(`"port", "method" and "uri" required. options=${options}`);
+	options = _.defaultsDeep({}, options, {
+		method: 'get',
+		bodyParsers: {
+			json: {
+				strict: false
+			},
+			text: {}
+		}
+	});
+	options.method = options.method.toLowerCase();
+
+	const {port, method, uri} = options;
+	if (!port || !uri) {
+		throw new Error(`"port" and "uri" are required. options=${options}`);
 	}
 
 	const listener = listeners[port] || listenerService.addListener(port);
-	const hasMock = listener.get(options.uri, options.method);
+	const hasMock = listener.get(uri, method);
 	if (hasMock) {
-		logService.info(`Overwriting mock: ${options.method} http://localhost:${port}${options.uri}`);
+		logService.info(`Overwriting mock: ${method} http://localhost:${port}${options.uri}`);
 	}
 
 	listener.add(options);

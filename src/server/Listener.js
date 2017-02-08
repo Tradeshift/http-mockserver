@@ -12,7 +12,6 @@ class Listener {
 	// Create new listener
 	constructor (port) {
 		const app = express();
-		app.use(bodyParser.json());
 		app.use((req, res, next) => {
 			requestLogService.addEntry(req, res);
 			next();
@@ -38,14 +37,26 @@ class Listener {
 
 	// Add mock
 	add (options) {
-		const {uri, method} = options;
+		const {uri, method, bodyParsers} = options;
 		this.mocks[uri] = this.mocks[uri] || {};
 
 		// Register mock if it hasn't been registered before
 		if (!this.mocks[uri][method]) {
-			this.app[method.toLowerCase()](uri, (req, res) => {
+			const args = [uri];
+
+			// Add body parsers to args
+			_.each(bodyParsers, (options, name) => {
+				if (options !== false) {
+					args.push(bodyParser[name](options));
+				}
+			});
+
+			// Add request handler to args
+			args.push((req, res) => {
 				return this.mocks[uri][method].handler(req, res);
 			});
+
+			this.app[method.toLowerCase()](...args);
 		}
 
 		this.mocks[uri][method] = {
