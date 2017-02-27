@@ -28,6 +28,10 @@ listenerService.addMock = function (options) {
 		throw new Error(`"port", "method" and "uri" required. options=${options}`);
 	}
 
+	if (!isValidHttpMethod(options.method)) {
+		throw new Error(`"${options.method}" is not a valid http method`);
+	}
+
 	const listener = listeners[port] || listenerService.addListener(port);
 	const hasMock = listener.get(options.uri, options.method);
 	if (hasMock) {
@@ -63,5 +67,10 @@ listenerService.clear = function () {
 listenerService.getAll = function () {
 	return listeners;
 };
+
+function isValidHttpMethod (method) {
+	const methods = require('http').METHODS;
+	return methods.includes(method.toUpperCase());
+}
 
 module.exports = listenerService;
