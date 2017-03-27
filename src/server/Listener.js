@@ -43,20 +43,24 @@ class Listener {
 	add (options) {
 		const {uri, method} = options;
 		this.mocks[uri] = this.mocks[uri] || {};
-
-		// Register mock if it hasn't been registered before
-		if (!this.mocks[uri][method]) {
-			this.app[method.toLowerCase()](uri, (req, res) => {
-				return this.mocks[uri][method].handler(req, res);
-			});
+		const oldMock = this.mocks[uri][method];
+		if (oldMock) {
+			// close pending requests
+			oldMock.clients.forEach(client => client.end());
 		}
-
 		this.mocks[uri][method] = {
 			options: options,
 			clients: [],
 			chunks: [],
 			handler: this.getMockHandler(options)
 		};
+
+		// Register mock if it hasn't been registered before
+		if (!oldMock) {
+			this.app[method.toLowerCase()](uri, (req, res) => {
+				return this.mocks[uri][method].handler(req, res);
+			});
+		}
 	}
 
 	destroy () {
