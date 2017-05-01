@@ -33,10 +33,6 @@ class MockServerFactory {
 		return this.service.addMock(options);
 	}
 
-	addMocks (...args) {
-		return this.addMocks(...args);
-	}
-
 	sendData (options) {
 		return this.service.sendData(this.port, options);
 	}

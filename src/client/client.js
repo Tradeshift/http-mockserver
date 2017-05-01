@@ -66,10 +66,6 @@ clientService.addMock = function (options) {
 	});
 };
 
-clientService.addMocks = function (...mocks) {
-	return Q.all(mocks.map(clientService.addMock));
-};
-
 clientService.sendData = function (port, options) {
 	return req({
 		uri: '/listener/' + port + '/chunk',
