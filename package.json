@@ -1,7 +1,7 @@
 {
   "name": "http-mockserver",
   "description": "Testing made easy with mocked http servers",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "license": "MIT",
   "jest": {
     "verbose": false,
@@ -28,6 +28,7 @@
   "dependencies": {
     "body-parser": "1.15.2",
     "express": "4.14.0",
+    "express-xml-bodyparser": "^0.3.0",
     "http-proxy": "1.16.2",
     "lodash": "4.17.4",
     "path-to-regexp": "1.7.0",

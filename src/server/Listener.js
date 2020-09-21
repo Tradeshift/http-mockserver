@@ -7,6 +7,7 @@ const httpProxy = require('http-proxy');
 const requestLogService = require('./requestLogService');
 const logService = require('./logService');
 const pathRegexp = require('path-to-regexp');
+const xmlparser = require('express-xml-bodyparser');
 
 class Listener {
 	// Create new listener
@@ -16,6 +17,7 @@ class Listener {
 			strict: false
 		}));
 		app.use(bodyParser.text());
+		app.use(xmlparser({trim: false, explicitArray: false}));
 		app.use((req, res, next) => {
 			requestLogService.addEntry(req, res);
 			next();
