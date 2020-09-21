@@ -1,7 +1,7 @@
 {
   "name": "http-mockserver",
   "description": "Testing made easy with mocked http servers",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "license": "MIT",
   "jest": {
     "verbose": false,
@@ -18,7 +18,7 @@
   },
   "main": "./src/index.js",
   "engines": {
-    "node": ">=6.9.1"
+    "node": "12.18.1"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,11 @@
   },
   "author": "Tradeshift",
   "dependencies": {
-    "body-parser": "1.15.2",
-    "express": "4.14.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "express-xml-bodyparser": "^0.3.0",
-    "http-proxy": "1.16.2",
-    "lodash": "4.17.4",
+    "http-proxy": "^1.18.1",
+    "lodash": "^4.17.20",
     "path-to-regexp": "1.7.0",
     "q": "1.4.1",
     "recursive-readdir": "2.1.0",
