@@ -1,0 +1,20 @@
+
+# catalog-info.yml
+# This file contains metadata for backstage
+# Read more about available fields and annotations:
+# https://github.com/backstage/backstage
+#
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: http-mockserver
+  description: |
+    Simplify development and testing by mocking http services with ease.
+  annotations:
+    github.com/project-slug: Tradeshift/http-mockserver # GitHub project name
+  tags:
+    - nodejs
+spec:
+  type: library
+  owner: workflow
+  lifecycle: experimental
