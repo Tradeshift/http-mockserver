@@ -1,4 +1,4 @@
-FROM eu.gcr.io/tradeshift-base/tradeshift-docker-node:12.18.1
+FROM node:12.18.1
 
 # Install npm dependencies
 COPY package.json package.json
