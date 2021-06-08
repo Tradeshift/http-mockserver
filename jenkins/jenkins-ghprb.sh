@@ -7,4 +7,6 @@ set -e
 IMAGE_NAME=eu.gcr.io/tradeshift-base/http-mockserver:$(git rev-parse HEAD)
 docker build -t $IMAGE_NAME .
 
+docker version
+echo "Starting tests..."
 docker run $IMAGE_NAME npm test
