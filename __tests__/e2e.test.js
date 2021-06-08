@@ -50,7 +50,7 @@ describe('when adding dynamic mock', () => {
 	it('should dynamically update the response', () => {
 		let counter = 0;
 		mockServer.addMock({
-			port: 2020,
+			port: 2031,
 			method: 'GET',
 			uri: '/e2e-dynamic-mock',
 			handler: function (req, res) {
@@ -59,12 +59,12 @@ describe('when adding dynamic mock', () => {
 			}
 		});
 
-		return request(`http://localhost:2020/e2e-dynamic-mock`).spread((response, body) => {
+		return request(`http://localhost:2031/e2e-dynamic-mock`).spread((response, body) => {
 			expect(response.statusCode).toBe(200);
 			expect(body).toBe('Counter: 1');
 		})
 		.then(() => {
-			return request(`http://localhost:2020/e2e-dynamic-mock`).spread((response, body) => {
+			return request(`http://localhost:2031/e2e-dynamic-mock`).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(body).toBe('Counter: 2');
 			});
