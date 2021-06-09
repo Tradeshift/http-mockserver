@@ -18,24 +18,22 @@ describe('examples', () => {
 			});
 		});
 
-		it('should replace placeholders with values', done => {
+		it('should replace placeholders with values', () => {
 			return request('http://localhost:2021/static-mock-with-params-example/sqren', {json: true}).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(response.headers['content-type']).toMatch(/text\/html/);
 				expect(body).toEqual('My name is sqren');
-			})
-			.then(done, done.fail);
+			});
 		});
 
-		it('should return json response with placeholders replaced', done => {
+		it('should return json response with placeholders replaced', () => {
 			return request('http://localhost:2021/static-mock-with-params-json-example/sqren', {json: true}).spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(response.headers['content-type']).toMatch(/application\/json/);
 				expect(body).toEqual({
 					name: 'sqren'
 				});
-			})
-			.then(done, done.fail);
+			});
 		});
 	});
 
@@ -46,7 +44,7 @@ describe('examples', () => {
 		});
 		afterEach(mockServer.stop);
 
-		it('should increment counter for every GET request', done => {
+		it('should increment counter for every GET request', () => {
 			return request('http://localhost:2020/dynamic-mock-example').spread((response, body) => {
 				expect(response.statusCode).toBe(200);
 				expect(body).toEqual('Counter: 1');
@@ -56,8 +54,7 @@ describe('examples', () => {
 					expect(response.statusCode).toBe(200);
 					expect(body).toEqual('Counter: 2');
 				});
-			})
-			.then(done, done.fail);
+			});
 		});
 	});
 });
