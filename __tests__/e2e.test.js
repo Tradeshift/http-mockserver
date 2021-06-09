@@ -8,38 +8,35 @@ describe('when adding mocks on the same uri', () => {
 	beforeAll(() => mockServer.start());
 	afterAll(mockServer.stop);
 
-	it('should return first mock', done => {
-		backendService.addMock({
+	it('should return first mock', async () => {
+		await expect(backendService.addMock({
 			uri: '/duplicate-mock',
 			method: 'GET',
 			response: {
 				body: 'First response'
 			}
-		})
-		.then(() => {
-			return request(`${MOCKED_HOST_URI}/duplicate-mock`).spread((response, body) => {
-				expect(response.statusCode).toBe(200);
-				expect(body).toBe('First response');
-			});
-		})
-		.then(done, done.fail);
+		})).resolves.toMatchObject({statusCode: 200});
+
+		const {response, body} = await request(`${MOCKED_HOST_URI}/duplicate-mock`)
+			.spread((response, body) => ({response, body}));
+
+		expect(response.statusCode).toBe(200);
+		expect(body).toBe('First response');
 	});
 
-	it('should return second mock', done => {
-		backendService.addMock({
+	it('should return second mock', async () => {
+		await expect(backendService.addMock({
 			uri: '/duplicate-mock',
 			method: 'GET',
 			response: {
 				body: 'Second response'
 			}
-		})
-		.then(() => {
-			return request(`${MOCKED_HOST_URI}/duplicate-mock`).spread((response, body) => {
-				expect(response.statusCode).toBe(200);
-				expect(body).toBe('Second response');
-			});
-		})
-		.then(done, done.fail);
+		})).resolves.toMatchObject({statusCode: 200});
+
+		const {response, body} = await request(`${MOCKED_HOST_URI}/duplicate-mock`)
+			.spread((response, body) => ({response, body}));
+		expect(response.statusCode).toBe(200);
+		expect(body).toBe('Second response');
 	});
 });
 
@@ -76,41 +73,28 @@ describe('clean', () => {
 	beforeAll(() => mockServer.start());
 	afterAll(mockServer.stop);
 
-	it('should return a mock when it has been added', done => {
+	it('should return a mock when it has been added', async () => {
 		// Add mock
-		backendService.addMock({
+		await expect(backendService.addMock({
 			uri: '/test',
 			method: 'get',
 			response: {
 				body: 'hello world'
 			}
-		})
+		})).resolves.toMatchObject({ statusCode: 200 });
 
 		// Mock should be returned
-		.then(() => {
-			return request(`${MOCKED_HOST_URI}/test`).spread((response, body) => {
-				expect(response.statusCode).toBe(200);
-				expect(body).toBe('hello world');
-			});
-		})
-		.then(done, done.fail);
+		const {response, body} = await request(`${MOCKED_HOST_URI}/test`)
+			.spread((response, body) => ({response, body}));
+		expect(response.statusCode).toBe(200);
+		expect(body).toBe('hello world');
 	});
 
-	it('should not return a mock after it has been cleared', done => {
-		mockClient.clearAll()
-
+	it('should not return a mock after it has been cleared', async () => {
+		await expect(mockClient.clearAll()).resolves.toBeTruthy();
 		// Requests should be cleared
-		.then(() => backendService.getRequests())
-		.then(res => {
-			expect(res).toEqual([]);
-		})
-
+		await expect(backendService.getRequests()).resolves.toStrictEqual([]);
 		// Mock should not be returned
-		.then(() => {
-			request(`${MOCKED_HOST_URI}/test`)
-				.then(done.fail)
-				.catch(() => {});
-		})
-		.then(done, done.fail);
+		await expect(request(`${MOCKED_HOST_URI}/test`)).rejects.toBeTruthy();
 	});
 });
