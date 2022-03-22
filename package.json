@@ -27,7 +27,9 @@
   },
   "author": "Tradeshift",
   "overrides": {
-    "follow-redirects": "^1.14.9"
+    "follow-redirects": "^1.14.9",
+    "json-schema": "^0.4.0",
+    "minimist": "^1.2.6"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -44,10 +46,10 @@
     "yargs": "^17.4.0"
   },
   "devDependencies": {
-    "eslint": "3.13.0",
-    "eslint-config-standard": "6.2.1",
-    "eslint-plugin-promise": "3.4.0",
-    "eslint-plugin-standard": "2.0.1",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-promise": "^4.2.1 || ^5.0.0",
+    "eslint-plugin-standard": "5.0.0",
     "jest": "^27.5.1"
   }
 }
