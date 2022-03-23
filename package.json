@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "eslint-config-standard": "^16.0.3",
     "express": "^4.17.1",
     "express-xml-bodyparser": "^0.3.0",
     "http-proxy": "^1.18.1",
@@ -47,7 +48,6 @@
   },
   "devDependencies": {
     "eslint": "^7.12.1",
-    "eslint-config-standard": "16.0.3",
     "eslint-plugin-promise": "^4.2.1 || ^5.0.0",
     "eslint-plugin-standard": "5.0.0",
     "jest": "^27.5.1"
