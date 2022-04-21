@@ -1,0 +1,21 @@
+name: Semantic release
+on: [pull_request]
+
+jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Dry-run release
+        uses: tradeshift/actions-semantic-release@v1
+        id: semantic-release
+        with:
+          dry_run: true
+          check_name: Semantic release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint commit messages
+        uses: tradeshift/commitlint-github-action@v3

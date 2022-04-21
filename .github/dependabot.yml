@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      # trigger a release for deps
+      prefix: "fix"
+      # don't trigger a release for dev-deps
+      prefix-development: "chore"
+      include: "scope"

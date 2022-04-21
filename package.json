@@ -1,35 +1,26 @@
 {
   "name": "http-mockserver",
+  "version": "0.0.0-semantically-released",
   "description": "Testing made easy with mocked http servers",
-  "version": "2.3.0",
-  "license": "MIT",
-  "jest": {
-    "verbose": false,
-    "testEnvironment": "node"
-  },
-  "scripts": {
-    "start": "./bin/http-mockserver.js",
-    "debug": "node --inspect --debug-brk src/server/index.js",
-    "lint": "eslint ./src",
-    "test": "jest"
-  },
-  "bin": {
-    "http-mockserver": "./bin/http-mockserver.js"
-  },
-  "main": "./src/index.js",
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Tradeshift/node-mock-server.git"
   },
+  "license": "MIT",
   "author": "Tradeshift",
-  "overrides": {
-    "follow-redirects": "^1.14.9",
-    "json-schema": "^0.4.0",
-    "minimist": "^1.2.6"
+  "main": "./src/index.js",
+  "bin": {
+    "http-mockserver": "./bin/http-mockserver.js"
+  },
+  "scripts": {
+    "debug": "node --inspect --debug-brk src/server/index.js",
+    "lint": "eslint ./src",
+    "start": "./bin/http-mockserver.js",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": false
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -51,5 +42,14 @@
     "eslint-plugin-promise": "^4.2.1 || ^5.0.0",
     "eslint-plugin-standard": "5.0.0",
     "jest": "^27.5.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "overrides": {
+    "follow-redirects": "^1.14.9",
+    "json-schema": "^0.4.0",
+    "minimist": "^1.2.6"
   }
 }
