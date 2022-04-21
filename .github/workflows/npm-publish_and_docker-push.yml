@@ -1,0 +1,34 @@
+name: npm publish and docker push
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  npm-publish:
+    uses: tradeshift/actions-workflow-npm/.github/workflows/comment-npm-publish_and_docker-push.yml@v1
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      npm-read-token: ${{ secrets.NPM_PUBLISH_TOKEN_PUBLIC }}
+  docker:
+    needs: [npm-publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: get the latest release with tag
+        id: latest-release
+        run: |
+          echo "::set-output name=release::$(curl -s https://api.github.com/repos/Tradeshift/http-mockserver/releases/latest |
+            grep '"tag_name":' |
+            sed -E 's/.*"([^"]+)".*/\1/')"
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Build and push Docker image
+        uses: tradeshift/actions-docker@v1
+        with:
+          password: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY_NOBASE64 }}
+          build-args: |
+            NPM_TOKEN=${{ secrets.NPM_TOKEN }}
+            SOURCE_COMMIT=${{ github.event.pull_request.head.sha }}
+          tags: |
+            eu.gcr.io/tradeshift-base/http-mockserver:${{ steps.latest-release.outputs.release }}
