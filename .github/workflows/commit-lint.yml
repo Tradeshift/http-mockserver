@@ -19,3 +19,18 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Lint commit messages
         uses: tradeshift/commitlint-github-action@v3
+  docker:
+    runs-on: self-hosted
+    needs: [test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Build and push Docker image
+        uses: tradeshift/actions-docker@v1
+        with:
+          password: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY_NOBASE64 }}
+          build-args: |
+            NPM_TOKEN=${{ secrets.NPM_TOKEN }}
+            SOURCE_COMMIT=${{ github.event.pull_request.head.sha }}
