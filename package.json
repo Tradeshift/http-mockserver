@@ -33,7 +33,7 @@
     "recursive-readdir": "2.1.0",
     "request": "^2.88.2",
     "server-destroy": "1.0.1",
-    "uuid": "3.0.1",
+    "uuid": "8.3.2",
     "yargs": "^17.4.0"
   },
   "devDependencies": {
