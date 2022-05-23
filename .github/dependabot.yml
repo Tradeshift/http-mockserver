@@ -1,12 +1,22 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: "daily"
+      interval: daily
     commit-message:
-      # trigger a release for deps
-      prefix: "fix"
-      # don't trigger a release for dev-deps
-      prefix-development: "chore"
-      include: "scope"
+      prefix: fix
+      prefix-development: chore
+      include: scope
+  - package-ecosystem: docker
+    directory: /
+    registries:
+      - tradeshift-gcr
+    schedule:
+      interval: daily
+registries:
+  tradeshift-gcr:
+    type: docker-registry
+    url: eu.gcr.io
+    username: _json_key
+    password: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY_NOBASE64 }}
