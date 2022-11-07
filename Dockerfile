@@ -1,4 +1,4 @@
-FROM eu.gcr.io/tradeshift-base/tradeshift-node:16
+FROM eu.gcr.io/tradeshift-base/tradeshift-node:18
 
 # Install npm dependencies
 COPY package.json package.json
