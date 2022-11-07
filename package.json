@@ -29,7 +29,7 @@
     "http-proxy": "^1.18.1",
     "lodash": "^4.17.21",
     "path-to-regexp": "1.7.0",
-    "q": "1.4.1",
+    "q": "1.5.1",
     "recursive-readdir": "2.2.3",
     "request": "^2.88.2",
     "server-destroy": "1.0.1",
