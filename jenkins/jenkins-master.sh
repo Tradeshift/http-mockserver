@@ -6,7 +6,7 @@
 VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
 
 # Images
-IMAGE_NAME=eu.gcr.io/tradeshift-base/http-mockserver
+IMAGE_NAME=063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/http-mockserver
 
 # Build (tag: latest)
 docker build -t $IMAGE_NAME .

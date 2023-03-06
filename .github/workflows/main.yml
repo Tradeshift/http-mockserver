@@ -84,9 +84,9 @@ jobs:
       - name: Build and push Docker image
         uses: tradeshift/actions-docker@v1
         with:
-          password: ${{ secrets.GCLOUD_SERVICE_ACCOUNT_KEY_NOBASE64 }}
+          repository: 063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/http-mockserver
           build-args: |
             NPM_TOKEN=${{ secrets.NPM_TOKEN }}
             SOURCE_COMMIT=${{ github.event.pull_request.head.sha }}
           tags: |
-            eu.gcr.io/tradeshift-base/http-mockserver:${{ steps.latest-release.outputs.release }}
+            063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/http-mockserver:${{ steps.latest-release.outputs.release }}
