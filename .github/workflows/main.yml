@@ -71,6 +71,11 @@ jobs:
     needs: [release]
     runs-on: ubuntu-latest
     steps:
+      - name: Docker auth
+        uses: tradeshift/actions-docker@v1
+        with:
+          repository: 063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/http-mockserver
+          auth-only: true
       - name: get the latest release with tag
         id: latest-release
         run: |
