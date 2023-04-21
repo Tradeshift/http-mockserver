@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>Tradeshift/renovate-config"
+    "local>Tradeshift/renovate-config:automerge-minor"
+  ],
+  "timezone": "Europe/Bucharest",
+  "automergeSchedule": [
+    "after 9am every weekday",
+    "before 3pm every weekday"
   ]
 }
