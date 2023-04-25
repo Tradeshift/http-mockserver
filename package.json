@@ -48,7 +48,7 @@
     "npm": ">=8.0.0"
   },
   "overrides": {
-    "follow-redirects": "^1.14.9",
+    "follow-redirects": "^1.15.2",
     "json-schema": "^0.4.0",
     "minimist": "^1.2.6"
   }
