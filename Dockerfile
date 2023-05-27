@@ -1,4 +1,4 @@
-FROM 063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/tradeshift-node:16
+FROM 063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/tradeshift-node:18
 
 # Install npm dependencies
 COPY package.json package.json
