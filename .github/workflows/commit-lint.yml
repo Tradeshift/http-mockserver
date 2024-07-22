@@ -9,7 +9,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Dry-run release
-        uses: tradeshift/actions-semantic-release@v1
+        uses: tradeshift/actions-semantic-release@v2
         id: semantic-release
         with:
           dry_run: true
