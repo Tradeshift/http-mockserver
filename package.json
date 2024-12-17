@@ -45,7 +45,7 @@
   },
   "engines": {
     "node": ">=v16.20.2",
-    "npm": ">=10.8.2"
+    "npm": ">=11.0.0"
   },
   "overrides": {
     "follow-redirects": "^1.15.2",
