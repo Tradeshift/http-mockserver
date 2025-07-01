@@ -23,7 +23,7 @@
     "verbose": false
   },
   "dependencies": {
-    "body-parser": "^1.20.3",
+    "body-parser": "^2.2.0",
     "express": "^4.21.2",
     "express-xml-bodyparser": "^0.3.0",
     "http-proxy": "^1.18.1",
