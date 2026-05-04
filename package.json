@@ -34,7 +34,7 @@
     "request": "^2.88.2",
     "server-destroy": "1.0.1",
     "uuid": "3.4.0",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
