@@ -23,7 +23,7 @@
     "verbose": false
   },
   "dependencies": {
-    "body-parser": "^1.20.4",
+    "body-parser": "^1.20.5",
     "express": "^4.21.2",
     "express-xml-bodyparser": "^0.4.1",
     "http-proxy": "^1.18.1",
@@ -48,7 +48,7 @@
     "npm": ">=10.9.8"
   },
   "overrides": {
-    "follow-redirects": "^1.15.11",
+    "follow-redirects": "^1.16.0",
     "json-schema": "^0.4.0",
     "minimist": "^1.2.8"
   }
