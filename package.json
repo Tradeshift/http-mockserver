@@ -50,6 +50,9 @@
   "overrides": {
     "follow-redirects": "^1.16.2",
     "json-schema": "^0.4.0",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "request": {
+      "form-data": "^2.5.5"
+    }
   }
 }
