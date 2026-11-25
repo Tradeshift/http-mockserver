@@ -3,7 +3,7 @@ FROM 063399264027.dkr.ecr.eu-west-1.amazonaws.com/tradeshift-base/tradeshift-nod
 # Install npm dependencies
 COPY package.json package.json
 COPY package-lock.json package-lock.json
-RUN npm install
+RUN npm install --ignore-scripts
 
 COPY ./bin ./bin
 COPY ./__tests__ ./__tests__
